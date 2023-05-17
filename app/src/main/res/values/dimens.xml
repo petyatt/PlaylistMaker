@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="text_Size_22sp">22sp</dimen>
+    <dimen name="iconPadding_10dp">10dp</dimen>
+    <dimen name="corner_Radius_16dp">16dp</dimen>
+    <dimen name="settings_text_16sp">16sp</dimen>
+</resources>
