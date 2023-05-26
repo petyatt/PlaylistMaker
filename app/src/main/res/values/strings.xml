@@ -8,4 +8,6 @@
     <string name="write_support">Написать в поддержку</string>
     <string name="user_agreement">Пользовательское соглашение</string>
     <string name="dark_theme">Темная тема</string>
+    <string name="hint_search">Поиск</string>
+    <string name="clear_">Стереть</string>
 </resources>

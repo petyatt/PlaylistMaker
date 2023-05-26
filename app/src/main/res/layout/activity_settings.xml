@@ -4,25 +4,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingStart="16dp"
-    android:paddingEnd="18dp"
     android:orientation="vertical"
-    android:background="@color/white">
+    android:background="?attr/colorPrimaryVariant">
 
     <Button
         android:id="@+id/button_back"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:backgroundTint="@color/white"
-        android:drawablePadding="10dp"
-        android:gravity="top"
+        android:gravity="start"
+        android:paddingTop="@dimen/paddingTop_14dp"
         android:text="@string/settings"
-        android:textAllCaps="false"
-        android:textColor="#1A1B22"
-        android:textSize="22sp"
+        android:textSize="@dimen/text_Size_22sp"
         app:icon="@drawable/back"
-        app:iconTint="@color/black"/>
+        app:iconPadding="@dimen/iconPadding_28dp"
+        style="@style/ButtonSettingsStyle"/>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -30,58 +24,31 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="21dp"
-            android:paddingBottom="21dp"
+            android:paddingStart="@dimen/paddingTop_21dp"
             android:text="@string/dark_theme"
-            android:textColor="@color/black"
-            android:textSize="@dimen/settings_text_16sp"/>
+            style="@style/TextSettingsStyle"/>
 
 
         <Switch
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="21dp"
-            android:paddingBottom="21dp"
-            android:layout_gravity="end"/>
+            style="@style/SwitchCompatStyle"/>
     </FrameLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="21dp"
-        android:paddingBottom="21dp"
-        android:backgroundTint="@color/white"
+    <Button
+        android:id="@+id/button_share_app"
         android:text="@string/share_app"
-        android:textColor="@color/black"
-        android:textSize="@dimen/settings_text_16sp"
-        android:textAllCaps="false"
-        app:drawableRightCompat="@drawable/share"/>
+        app:drawableRightCompat="@drawable/share"
+        style="@style/ButtonStyle"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="21dp"
-        android:paddingBottom="21dp"
-        android:backgroundTint="@color/white"
+    <Button
+        android:id="@+id/button_write_support"
         android:text="@string/write_support"
-        android:textColor="@color/black"
-        android:textSize="@dimen/settings_text_16sp"
-        android:textAllCaps="false"
-        app:drawableRightCompat="@drawable/group" />
+        app:drawableRightCompat="@drawable/group"
+        style="@style/ButtonStyle"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="21dp"
-        android:paddingBottom="21dp"
-        android:backgroundTint="@color/white"
+    <Button
+        android:id="@+id/button_user_agreement"
         android:text="@string/user_agreement"
-        android:textColor="@color/black"
-        android:textSize="@dimen/settings_text_16sp"
-        android:layout_marginBottom="28dp"
-        android:textAllCaps="false"
-        app:drawableRightCompat="@drawable/forvard" />
+        app:drawableRightCompat="@drawable/forvard"
+        style="@style/ButtonStyle"/>
 
 </LinearLayout>
