@@ -10,8 +10,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginStart="@dimen/start_16dp"
+        android:layout_marginTop="@dimen/end_14dp"
         android:text="@string/playlist_maker"
         android:textAllCaps="false"
         android:textColor="@color/white"
@@ -19,7 +19,7 @@
 
     <Button
         android:id="@+id/button_search"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="@dimen/marginTop_80dp"
         android:text="@string/search"
         app:cornerRadius="@dimen/corner_Radius_16dp"
         app:icon="@drawable/vector"
@@ -42,7 +42,7 @@
 
     <Button
         android:id="@+id/button_settings"
-        android:layout_marginBottom="28dp"
+        android:layout_marginBottom="@dimen/marginBottom_28dp"
         android:text="@string/settings"
         app:cornerRadius="@dimen/corner_Radius_16dp"
         app:icon="@drawable/settings"

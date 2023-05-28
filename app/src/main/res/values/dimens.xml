@@ -21,4 +21,8 @@
     <dimen name="paddingTop_14dp">14dp</dimen>
     <dimen name="iconPadding_28dp">28dp</dimen>
     <dimen name="layout_marginEnd_18dp">18dp</dimen>
+    <dimen name="start_16dp">16dp</dimen>
+    <dimen name="end_14dp">14dp</dimen>
+    <dimen name="marginBottom_28dp">28dp</dimen>
+    <dimen name="marginTop_80dp">80dp</dimen>
 </resources>

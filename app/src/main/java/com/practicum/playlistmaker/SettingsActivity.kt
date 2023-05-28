@@ -21,8 +21,8 @@ class SettingsActivity : AppCompatActivity() {
         val shareApp = findViewById<Button>(R.id.button_share_app)
         shareApp.setOnClickListener {
             val intent = Intent(Intent.ACTION_SEND)
-            intent.type = "text/plain"
-            val  appUrl = "https://yandex.ru/practicum"
+            intent.type = getString(R.string.text_plain)
+            val  appUrl = getString(R.string.https_yandex_ru_practicum)
             intent.putExtra(Intent.EXTRA_TEXT, appUrl)
             startActivity(intent)
         }
@@ -30,21 +30,21 @@ class SettingsActivity : AppCompatActivity() {
         val writeSupport = findViewById<Button>(R.id.button_write_support)
         writeSupport.setOnClickListener {
             val intent = Intent(Intent.ACTION_SENDTO)
-            intent.data = Uri.parse("mailto:petya.07@yandex.ru")
+            intent.data = Uri.parse(getString(R.string.mailto_petya_07_yandex_ru))
             intent.putExtra(
                 Intent.EXTRA_SUBJECT,
-                "Сообщение разработчикам и разработчицам приложения Playlist Maker"
+                getString(R.string.playlist_maker_message_developers)
             )
             intent.putExtra(
                 Intent.EXTRA_TEXT,
-                "Спасибо разработчикам и разработчицам за крутое приложение!"
+                getString(R.string.thanks_developers)
             )
             startActivity(intent)
         }
 
         val userAgreement = findViewById<Button>(R.id.button_user_agreement)
         userAgreement.setOnClickListener {
-            val agreementUrl = "https://yandex.ru/legal/practicum_offer/"
+            val agreementUrl = getString(R.string.https_yandex_ru_legal_practicum_offer)
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(agreementUrl))
             startActivity(intent)
         }

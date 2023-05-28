@@ -40,7 +40,6 @@
             android:contentDescription="@string/clear_"
             style="@style/ImageViewStyle"/>
 
-
     </LinearLayout>
 
 </LinearLayout>

@@ -18,20 +18,18 @@
         app:iconPadding="@dimen/iconPadding_28dp"
         style="@style/ButtonSettingsStyle"/>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <TextView
-            android:paddingStart="@dimen/paddingTop_21dp"
             android:text="@string/dark_theme"
             style="@style/TextSettingsStyle"/>
 
-
-        <Switch
+        <androidx.appcompat.widget.SwitchCompat
             style="@style/SwitchCompatStyle"/>
-    </FrameLayout>
+    </LinearLayout>
 
     <Button
         android:id="@+id/button_share_app"
