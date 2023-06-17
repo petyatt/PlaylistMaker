@@ -4,4 +4,27 @@
     <dimen name="iconPadding_10dp">10dp</dimen>
     <dimen name="corner_Radius_16dp">16dp</dimen>
     <dimen name="settings_text_16sp">16sp</dimen>
+    <dimen name="icon_size_20dp">20dp</dimen>
+    <dimen name="icon_size_19dp">19dp</dimen>
+    <dimen name="paddingTop_21dp">21dp</dimen>
+    <dimen name="paddingBotton_21dp">21dp</dimen>
+    <dimen name="drawablePadding_9dp">9dp</dimen>
+    <dimen name="paddingStart_16dp">16dp</dimen>
+    <dimen name="paddingEnd_16dp">16dp</dimen>
+    <dimen name="paddingBottom_8_5dp">15dp</dimen>
+    <dimen name="paddingTop_8_5dp">15dp</dimen>
+    <dimen name="layout_marginTop_8dp">8dp</dimen>
+    <dimen name="layout_marginRight_16dp">16dp</dimen>
+    <dimen name="layout_marginLeft_16dp">16dp</dimen>
+    <dimen name="layout_marginStart_64dp">64dp</dimen>
+    <dimen name="layout_marginTop_14dp">14dp</dimen>
+    <dimen name="paddingTop_14dp">14dp</dimen>
+    <dimen name="iconPadding_28dp">28dp</dimen>
+    <dimen name="layout_marginEnd_18dp">18dp</dimen>
+    <dimen name="start_16dp">16dp</dimen>
+    <dimen name="end_14dp">14dp</dimen>
+    <dimen name="marginBottom_28dp">28dp</dimen>
+    <dimen name="marginTop_80dp">80dp</dimen>
+    <dimen name="ts_11sp">11sp</dimen>
+    <dimen name="ts_16sp">16sp</dimen>
 </resources>

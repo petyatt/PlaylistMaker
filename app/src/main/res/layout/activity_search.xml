@@ -1,9 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchActivity">
+    android:background="?attr/colorPrimaryVariant"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:id="@+id/button_back"
+        style="@style/ButtonSettingsStyle"
+        android:layout_width="wrap_content"
+        android:gravity="start"
+        android:paddingTop="@dimen/paddingTop_14dp"
+        android:text="@string/search"
+        android:textSize="@dimen/text_Size_22sp"
+        app:icon="@drawable/back"
+        app:iconPadding="@dimen/iconPadding_28dp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/inputEditText"
+            style="@style/EditTextStyle"
+            android:background="@drawable/bg_rounded_corners"
+            android:hint="@string/hint_search"
+            android:importantForAutofill="no"
+            android:textColor="@color/black"
+            app:drawableLeftCompat="@drawable/search" />
+
+        <ImageView
+            android:id="@+id/clearIcon"
+            style="@style/ImageViewStyle"
+            android:contentDescription="@string/clear_"
+            android:src="@drawable/x" />
+
+    </FrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"/>
+
+</LinearLayout>

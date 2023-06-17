@@ -8,4 +8,12 @@
     <string name="write_support">Написать в поддержку</string>
     <string name="user_agreement">Пользовательское соглашение</string>
     <string name="dark_theme">Темная тема</string>
+    <string name="hint_search">Поиск</string>
+    <string name="clear_">Стереть</string>
+    <string name="https_yandex_ru_practicum">https://yandex.ru/practicum</string>
+    <string name="mailto_petya_07_yandex_ru">mailto:petya.07@yandex.ru</string>
+    <string name="playlist_maker_message_developers">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="thanks_developers">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="https_yandex_ru_legal_practicum_offer">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="text_plain">text/plain</string>
 </resources>
