@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    style="@style/pattern_track">
 
     <ImageView
         android:id="@+id/imageView3"
@@ -13,7 +14,8 @@
         android:layout_gravity="end"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="23dp"
-        app:srcCompat="@drawable/forvard" />
+        app:srcCompat="@drawable/forvard"
+        style="@style/pattern_track"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,7 +29,7 @@
             android:layout_marginStart="13dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            tools:srcCompat="@tools:sample/avatars" />
+            tools:srcCompat="@tools:sample/avatars"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -42,11 +44,11 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="40dp"
                 android:ellipsize="end"
-                android:textColor="@color/black"
                 android:fontFamily="@font/ys_display_regular"
                 android:maxLines="1"
                 android:textSize="@dimen/ts_16sp"
-                tools:text="Название песни" />
+                tools:text="Название песни"
+                style="@style/pattern_track"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -62,10 +64,10 @@
                     android:layout_weight="1"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:textColor="@color/textColorHint"
                     android:fontFamily="@font/ys_display_regular"
                     android:textSize="@dimen/ts_11sp"
-                    tools:text="Название исполнителя" />
+                    tools:text="Название исполнителя"
+                    style="@style/pattern_track"/>
 
                 <ImageView
                     android:id="@+id/point"
@@ -81,10 +83,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:textColor="@color/textColorHint"
                     android:fontFamily="@font/ys_display_regular"
                     android:textSize="@dimen/ts_11sp"
-                    tools:text="5:01" />
+                    tools:text="5:01"
+                    style="@style/pattern_track"/>
 
             </LinearLayout>
         </LinearLayout>
