@@ -16,4 +16,10 @@
     <string name="thanks_developers">Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="https_yandex_ru_legal_practicum_offer">https://yandex.ru/legal/practicum_offer/</string>
     <string name="text_plain">text/plain</string>
+    <string name="nothing_found">Ничего не найдено!</string>
+    <string name="something_went_wrong">Что-то пошло не так</string>
+    <string name="error_not_found">Ничего не нашлось</string>
+    <string name="error_not_internet">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="zaglushka">Заглушка</string>
+    <string name="refresh_button">Обновить</string>
 </resources>
