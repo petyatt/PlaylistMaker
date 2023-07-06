@@ -55,7 +55,7 @@
         android:id="@+id/placeholderView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/dark_mode_no_search"
+        android:src="@drawable/no_search"
         app:layout_constraintTop_toBottomOf="@+id/inputEditText"
         android:layout_marginTop="110dp"
         android:visibility="gone"
