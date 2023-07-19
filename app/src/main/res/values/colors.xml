@@ -3,7 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#3772E7</color>
-    <color name="switch_thumb_off_color">#3772E7</color>
-    <color name="switch_thumb_on_color">#AEAFB4</color>
+    <color name="thumbTint">#AEAFB4</color>
+    <color name="trackTint">#E6E8EB</color>
     <color name="textColorHint">#AEAFB4</color>
 </resources>

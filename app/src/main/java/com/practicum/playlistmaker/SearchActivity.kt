@@ -2,6 +2,7 @@ package com.practicum.playlistmaker
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -22,14 +23,24 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+const val SAVE_HISTORY = "save_history"
 
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var queryInput: EditText
     private lateinit var tracksList: RecyclerView
+    private lateinit var saveTrackListHistory: RecyclerView
     private lateinit var placeholderView: ImageView
     private lateinit var placeholderText: TextView
+    private lateinit var historyViewSearch: TextView
     private lateinit var refreshButton: Button
+    private lateinit var historyClearButton: Button
+
+    private lateinit var searchHistory: SearchHistory
+    private lateinit var sharedPreferences: SharedPreferences
+
+    private lateinit var adapter: TrackAdapter
+    private lateinit var historySearchAdapter: TrackAdapter
 
     private val retrofit = Retrofit.Builder()
         .baseUrl(iTunesSearchAPIBaseUrl)
@@ -40,22 +51,50 @@ class SearchActivity : AppCompatActivity() {
 
     private var tracks = ArrayList<Track>()
 
-    private val adapter = TrackAdapter()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+        sharedPreferences = getSharedPreferences(SAVE_HISTORY, Context.MODE_PRIVATE)
+        searchHistory = SearchHistory(sharedPreferences)
+
+        adapter = TrackAdapter(searchHistory)
+        historySearchAdapter = TrackAdapter(searchHistory)
+
         queryInput = findViewById(R.id.inputEditText)
         tracksList = findViewById(R.id.recyclerView)
+        saveTrackListHistory = findViewById(R.id.recyclerViewHistory)
         placeholderView = findViewById(R.id.placeholderView)
         placeholderText = findViewById(R.id.placeholderText)
         refreshButton = findViewById(R.id.refrech_button)
+        historyViewSearch = findViewById(R.id.historyViewSearch)
+        historyClearButton = findViewById(R.id.historyClearButton)
 
         adapter.tracks = tracks
 
+        historySearchAdapter.tracks = tracks
+
         tracksList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         tracksList.adapter = adapter
+
+        saveTrackListHistory.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        saveTrackListHistory.adapter = historySearchAdapter
+
+        val trackListHistory = sharedPreferences.getString(KEY_SEARCH_HISTORY, null)
+        if (trackListHistory != null) {
+            historySearchAdapter.tracks = ArrayList(searchHistory.readSearchHistory())
+            historySearchAdapter.notifyDataSetChanged()
+        }
+
+        val hasSearchHistory = searchHistory.readSearchHistory().isNotEmpty()
+        if (hasSearchHistory) {
+            historyViewSearch.visibility = View.VISIBLE
+            historyClearButton.visibility = View.VISIBLE
+        } else {
+            historyViewSearch.visibility = GONE
+            historyClearButton.visibility = GONE
+        }
+
 
         fun performSearch() {
             iTunesService.search(queryInput.text.toString())
@@ -65,11 +104,17 @@ class SearchActivity : AppCompatActivity() {
                     }
 
                     override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                        runOnUiThread {
-                            handleSearchFailure()
-                        }
+                        handleSearchFailure()
                     }
                 })
+        }
+
+        historyClearButton.setOnClickListener {
+            searchHistory.clearSearchHistory()
+            historySearchAdapter.tracks.clear()
+            historyViewSearch.visibility = GONE
+            historyClearButton.visibility = GONE
+            historySearchAdapter.notifyDataSetChanged()
         }
 
         refreshButton.setOnClickListener {
@@ -77,6 +122,18 @@ class SearchActivity : AppCompatActivity() {
             placeholderText.visibility = GONE
             refreshButton.visibility = GONE
             performSearch()
+        }
+
+        queryInput.setOnFocusChangeListener { _ , hasFocus ->
+            saveTrackListHistory.visibility = if (hasFocus && queryInput.text.isEmpty()) View.VISIBLE else GONE
+        }
+
+        queryInput.setOnFocusChangeListener { _ , hasFocus ->
+            historyClearButton.visibility = if (hasFocus && queryInput.text.isEmpty()) View.VISIBLE else GONE
+        }
+
+        queryInput.setOnFocusChangeListener { _ , hasFocus ->
+            historyViewSearch.visibility = if (!hasFocus && queryInput.text.isEmpty()) View.VISIBLE else GONE
         }
 
         queryInput.setOnEditorActionListener { v, actionId, _ ->
@@ -109,6 +166,11 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
+                saveTrackListHistory.visibility = if (queryInput.hasFocus() && s?.isEmpty() == true) View.VISIBLE else GONE
+                historyViewSearch.visibility = if (queryInput.hasFocus() && s?.isEmpty() == true) View.VISIBLE else GONE
+                historyClearButton.visibility = if (queryInput.hasFocus() && s?.isEmpty() == true) View.VISIBLE else GONE
+
+                historySearchAdapter.notifyDataSetChanged()
                 clearButton.visibility = clearButtonVisibility(s)
             }
 
@@ -123,6 +185,12 @@ class SearchActivity : AppCompatActivity() {
             clearButton.visibility = GONE
             tracksList.visibility = GONE
             tracks.clear()
+            historySearchAdapter.tracks.clear()
+            historySearchAdapter.tracks.addAll(searchHistory.readSearchHistory())
+            historySearchAdapter.notifyDataSetChanged()
+            saveTrackListHistory.visibility = View.VISIBLE
+            placeholderView.visibility = GONE
+            placeholderText.visibility = GONE
         }
     }
 
@@ -143,12 +211,16 @@ class SearchActivity : AppCompatActivity() {
         countValue = savedInstanceState.getInt(PRODUCT_AMOUNT, 0)
     }
 
-    fun clearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            GONE
-        } else {
-            View.VISIBLE
+    private fun clearButtonVisibility(s: CharSequence?): Int {
+        if (!s.isNullOrEmpty()) {
+            historyViewSearch.visibility = View.VISIBLE
+            historyClearButton.visibility = View.VISIBLE
         }
+        saveTrackListHistory.visibility = if (s.isNullOrEmpty()) View.VISIBLE else GONE
+        val hasSearchHistory = searchHistory.readSearchHistory().isNotEmpty()
+        historyViewSearch.visibility = if (hasSearchHistory) View.VISIBLE else GONE
+        historyClearButton.visibility = if (hasSearchHistory) View.VISIBLE else GONE
+        return if (s.isNullOrEmpty()) GONE else View.VISIBLE
     }
 
     private fun handleSearchResponse(responseCode: Int, results: List<Track>?) {

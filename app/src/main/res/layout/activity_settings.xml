@@ -23,12 +23,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            style="@style/TextSettingsStyle"
+            android:id="@+id/themeSwitcher"
             android:text="@string/dark_theme"
-            style="@style/TextSettingsStyle"/>
-
-        <androidx.appcompat.widget.SwitchCompat
-            style="@style/SwitchCompatStyle"/>
+            android:layout_gravity="start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <Button

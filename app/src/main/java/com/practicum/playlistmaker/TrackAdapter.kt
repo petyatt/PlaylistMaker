@@ -5,13 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class TrackAdapter : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
+class TrackAdapter(private val searchHistory: SearchHistory) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
 
     var tracks = ArrayList<Track>()
 
@@ -21,7 +22,14 @@ class TrackAdapter : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.bind(tracks[position])
+        val track = tracks[position]
+        holder.bind(track)
+        holder.itemView.setOnClickListener {
+            // Обработка нажатия на элемент списка
+            searchHistory.writeSearchHistory(track)
+            Toast.makeText(holder.itemView.context, "Трек сохранен в истории", Toast.LENGTH_SHORT).show()
+            notifyDataSetChanged()
+        }
     }
 
     override fun getItemCount() = tracks.size
@@ -37,6 +45,7 @@ class TrackAdapter : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
             trackNameTextView.text = track.trackName
             artistNameTextView.text = track.artistName
             trackTimeTextView.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
+
 
             Glide.with(itemView)
                 .load(track.artworkUrl100)

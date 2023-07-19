@@ -5,12 +5,18 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
+        themeSwitcher.isChecked = (application as App).darkTheme
+        themeSwitcher.setOnCheckedChangeListener { _ , Checked ->
+            (application as App).switchTheme(Checked)
+        }
 
         val buttonBack = findViewById<Button>(R.id.button_back)
         buttonBack.setOnClickListener {
