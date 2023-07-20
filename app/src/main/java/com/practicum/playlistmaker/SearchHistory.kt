@@ -5,7 +5,6 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 
-const val KEY_SEARCH_HISTORY = "key_search_history"
 
 class SearchHistory(private val sharedPreferences: SharedPreferences) {
 
@@ -24,26 +23,26 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
     fun writeSearchHistory(track: Track) {
         val editor = sharedPreferences.edit()
 
-        // Чтение текущей истории из SharedPreferences
         val json = sharedPreferences.getString(KEY_SEARCH_HISTORY, null)
         val gson = Gson()
         val currentHistory: MutableList<Track> =
             gson.fromJson(json, object : TypeToken<MutableList<Track>>() {}.type) ?: mutableListOf()
 
-        // Удаление предыдущей записи об этом треке из списка истории, если она уже есть
         currentHistory.removeAll { it.trackId == track.trackId }
 
-        // Добавление нового выбранного трека в начало списка истории
         currentHistory.add(0, track)
 
-        // Ограничение размера списка истории до 10 записей
-        while (currentHistory.size > 10) {
+        while (currentHistory.size > LIMITATIONS_HISTORY_TRACKS) {
             currentHistory.removeAt(currentHistory.lastIndex)
         }
 
-        // Сохранение обновленной истории обратно в SharedPreferences
         val jsonHistory = gson.toJson(currentHistory)
         editor.putString(KEY_SEARCH_HISTORY, jsonHistory)
         editor.apply()
+    }
+
+    companion object {
+        const val KEY_SEARCH_HISTORY = "key_search_history"
+        const val LIMITATIONS_HISTORY_TRACKS = 10
     }
 }

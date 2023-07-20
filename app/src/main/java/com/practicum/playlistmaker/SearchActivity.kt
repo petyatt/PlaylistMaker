@@ -23,8 +23,6 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-const val SAVE_HISTORY = "save_history"
-
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var queryInput: EditText
@@ -43,7 +41,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historySearchAdapter: TrackAdapter
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl(iTunesSearchAPIBaseUrl)
+        .baseUrl(iTunes_Search_API_Base_Url)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
@@ -80,7 +78,7 @@ class SearchActivity : AppCompatActivity() {
         saveTrackListHistory.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         saveTrackListHistory.adapter = historySearchAdapter
 
-        val trackListHistory = sharedPreferences.getString(KEY_SEARCH_HISTORY, null)
+        val trackListHistory = sharedPreferences.getString(SearchHistory.KEY_SEARCH_HISTORY, null)
         if (trackListHistory != null) {
             historySearchAdapter.tracks = ArrayList(searchHistory.readSearchHistory())
             historySearchAdapter.notifyDataSetChanged()
@@ -195,8 +193,9 @@ class SearchActivity : AppCompatActivity() {
     }
 
     companion object {
+        const val SAVE_HISTORY = "save_history"
         const val PRODUCT_AMOUNT = "PRODUCT_AMOUNT"
-        const val iTunesSearchAPIBaseUrl = "https://itunes.apple.com"
+        const val iTunes_Search_API_Base_Url = "https://itunes.apple.com"
     }
 
     private var countValue: Int = 0
