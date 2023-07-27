@@ -24,4 +24,13 @@
     <string name="refresh_button">Обновить</string>
     <string name="you_were_looking_for">Вы искали</string>
     <string name="clear_history">Очистить историю</string>
+    <string name="menu_button">Назад в меню</string>
+    <string name="_play_">Играть</string>
+    <string name="add_To_Collection">Добавить в коллекцию</string>
+    <string name="to_Favorites">В избранное</string>
+    <string name="trackTimeMills">Длительность</string>
+    <string name="collectionName">Альбом</string>
+    <string name="releaseDate">Год</string>
+    <string name="primaryGenreName">Жанр</string>
+    <string name="country">Страна</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,9 +26,9 @@ class TrackAdapter(private val searchHistory: SearchHistory) : RecyclerView.Adap
         val track = tracks[position]
         holder.bind(track)
         holder.itemView.setOnClickListener {
-            // Обработка нажатия на элемент списка
+            val intent = Intent(holder.itemView.context, AudioPlayerActivity::class.java)
+            holder.itemView.context.startActivity(intent)
             searchHistory.writeSearchHistory(track)
-            Toast.makeText(holder.itemView.context, "Трек сохранен в истории", Toast.LENGTH_SHORT).show()
             notifyDataSetChanged()
         }
     }

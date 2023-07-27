@@ -40,8 +40,10 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var adapter: TrackAdapter
     private lateinit var historySearchAdapter: TrackAdapter
 
+    private val iTunesSearchApiBaseUrl = "https://itunes.apple.com"
+
     private val retrofit = Retrofit.Builder()
-        .baseUrl(iTunes_Search_API_Base_Url)
+        .baseUrl(iTunesSearchApiBaseUrl)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
@@ -131,7 +133,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         queryInput.setOnFocusChangeListener { _ , hasFocus ->
-            historyViewSearch.visibility = if (!hasFocus && queryInput.text.isEmpty()) View.VISIBLE else GONE
+            historyViewSearch.visibility = if (hasFocus && queryInput.text.isEmpty()) GONE else GONE
         }
 
         queryInput.setOnEditorActionListener { v, actionId, _ ->
@@ -159,8 +161,7 @@ class SearchActivity : AppCompatActivity() {
 
         val simpleTextWatcher = object : TextWatcher {
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
@@ -172,7 +173,10 @@ class SearchActivity : AppCompatActivity() {
                 clearButton.visibility = clearButtonVisibility(s)
             }
 
-            override fun afterTextChanged(s: Editable?) {}
+            override fun afterTextChanged(s: Editable?) {
+                historyViewSearch.visibility = GONE
+                historyClearButton.visibility = GONE
+            }
         }
         queryInput.addTextChangedListener(simpleTextWatcher)
 
@@ -187,6 +191,9 @@ class SearchActivity : AppCompatActivity() {
             historySearchAdapter.tracks.addAll(searchHistory.readSearchHistory())
             historySearchAdapter.notifyDataSetChanged()
             saveTrackListHistory.visibility = View.VISIBLE
+            historyViewSearch.visibility = View.VISIBLE
+            historyClearButton.visibility = View.VISIBLE
+
             placeholderView.visibility = GONE
             placeholderText.visibility = GONE
         }
@@ -195,7 +202,6 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         const val SAVE_HISTORY = "save_history"
         const val PRODUCT_AMOUNT = "PRODUCT_AMOUNT"
-        const val iTunes_Search_API_Base_Url = "https://itunes.apple.com"
     }
 
     private var countValue: Int = 0
@@ -211,14 +217,10 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
-        if (!s.isNullOrEmpty()) {
-            historyViewSearch.visibility = View.VISIBLE
-            historyClearButton.visibility = View.VISIBLE
-        }
-        saveTrackListHistory.visibility = if (s.isNullOrEmpty()) View.VISIBLE else GONE
         val hasSearchHistory = searchHistory.readSearchHistory().isNotEmpty()
-        historyViewSearch.visibility = if (hasSearchHistory) View.VISIBLE else GONE
-        historyClearButton.visibility = if (hasSearchHistory) View.VISIBLE else GONE
+        historyViewSearch.visibility = if (hasSearchHistory && !s.isNullOrEmpty()) View.VISIBLE else GONE
+        historyClearButton.visibility = if (hasSearchHistory && !s.isNullOrEmpty()) View.VISIBLE else GONE
+        saveTrackListHistory.visibility = if (s.isNullOrEmpty()) View.VISIBLE else GONE
         return if (s.isNullOrEmpty()) GONE else View.VISIBLE
     }
 

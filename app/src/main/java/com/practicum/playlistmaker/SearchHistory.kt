@@ -21,7 +21,19 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
     }
 
     fun writeSearchHistory(track: Track) {
-        val editor = sharedPreferences.edit()
+        val editor: SharedPreferences.Editor= sharedPreferences.edit()
+
+        editor.putLong(ID, track.id)
+        editor.putLong(TRACK_ID, track.trackId)
+        editor.putString(COUNTRY, track.country)
+        editor.putString(TRACK_NAME, track.trackName)
+        editor.putString(RELEASE_DATE, track.releaseDate)
+        editor.putString(ARTIST_NAME, track.artistName)
+        editor.putLong(TRACK_TIME_MILLIS, track.trackTimeMillis)
+        editor.putString(ARTWORK_URL_100, track.getCoverArtwork())
+        editor.putString(COLLECTION_NAME, track.collectionName)
+        editor.putString(PRIMARY_GENRE_NAME, track.primaryGenreName)
+        editor.apply()
 
         val json = sharedPreferences.getString(KEY_SEARCH_HISTORY, null)
         val gson = Gson()
@@ -44,5 +56,15 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
     companion object {
         const val KEY_SEARCH_HISTORY = "key_search_history"
         const val LIMITATIONS_HISTORY_TRACKS = 10
+        const val ID = "id"
+        const val TRACK_ID = "trackId"
+        const val COUNTRY = "country"
+        const val TRACK_NAME = "track_Name"
+        const val RELEASE_DATE = "release_Date"
+        const val ARTIST_NAME = "artist_Name"
+        const val TRACK_TIME_MILLIS = " track_Time_Millis"
+        const val ARTWORK_URL_100 = "artwork_Url_100"
+        const val COLLECTION_NAME = "collection_Name"
+        const val PRIMARY_GENRE_NAME = "primary_Genre_Name"
     }
 }

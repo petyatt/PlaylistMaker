@@ -114,4 +114,11 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="buttonBackPlayer">
+        <item name="android:tint">@color/black</item>
+    </style>
+
+    <style name="textColorAudioPlayer">
+        <item name="android:textColor">@color/black</item>
+    </style>
 </resources>
