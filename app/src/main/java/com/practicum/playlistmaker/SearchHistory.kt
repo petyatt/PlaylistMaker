@@ -23,6 +23,7 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
     fun writeSearchHistory(track: Track) {
         val editor: SharedPreferences.Editor= sharedPreferences.edit()
 
+        editor.putString(PREVIEW_URL, track.previewUrl)
         editor.putLong(ID, track.id)
         editor.putLong(TRACK_ID, track.trackId)
         editor.putString(COUNTRY, track.country)
@@ -66,5 +67,6 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
         const val ARTWORK_URL_100 = "artwork_Url_100"
         const val COLLECTION_NAME = "collection_Name"
         const val PRIMARY_GENRE_NAME = "primary_Genre_Name"
+        const val PREVIEW_URL = "previewUrl"
     }
 }
