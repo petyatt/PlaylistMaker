@@ -1,9 +1,13 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.ui.main
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.presentation.ui.media.MediaActivity
+import com.practicum.playlistmaker.presentation.ui.settings.SettingsActivity
+import com.practicum.playlistmaker.presentation.ui.track.SearchTrackActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 
         val buttonSearch = findViewById<Button>(R.id.button_search)
         buttonSearch.setOnClickListener {
-            val searchIntent = Intent(this, SearchActivity::class.java)
+            val searchIntent = Intent(this, SearchTrackActivity::class.java)
             startActivity(searchIntent)
         }
 

@@ -1,9 +1,7 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.ui.player
 
-import android.content.Context
+
 import android.content.Intent
-import android.content.SharedPreferences
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,17 +11,21 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.playlistmaker.presentation.ui.switchTheme.App
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.presentation.ui.track.SearchTrackActivity
+import com.practicum.playlistmaker.domain.Creator
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class AudioPlayerActivity : AppCompatActivity() {
 
-    private var mediaPlayer = MediaPlayer()
     private var playerState = STATE_DEFAULT
     private var isAppInBackground = false
     private var mainThreadHandler: Handler? = null
+    private val mediaPlayer = Creator.providePlayerInteractor()
 
-    private lateinit var playButton: ImageButton
+    private var playButton: ImageButton? = null
     private lateinit var artworkUrl100: ImageView
     private lateinit var tvCollectionName: TextView
     private lateinit var tvPrimaryGenreName: TextView
@@ -33,11 +35,11 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var tvTrackName: TextView
     private lateinit var tvArtistName: TextView
     private lateinit var playbackProgress: TextView
-    private lateinit var searchHistory: SearchHistory
-    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val track = Creator.provideTracksInteractor(this)
 
         mainThreadHandler = Handler(Looper.getMainLooper())
 
@@ -46,52 +48,56 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_player)
 
-        sharedPreferences = getSharedPreferences(SearchActivity.SAVE_HISTORY, Context.MODE_PRIVATE)
-        searchHistory = SearchHistory(sharedPreferences)
-
         initViews()
 
-        val previewUrl = sharedPreferences.getString(SearchHistory.PREVIEW_URL, null)
-        val imageUrl  = sharedPreferences.getString(SearchHistory.ARTWORK_URL_100, null)
-        val collectionName = sharedPreferences.getString(SearchHistory.COLLECTION_NAME, null)
-        val primaryGenreName = sharedPreferences.getString(SearchHistory.PRIMARY_GENRE_NAME, null)
-        val releaseDate = sharedPreferences.getString(SearchHistory.RELEASE_DATE, null)
-        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-        val outputFormat = SimpleDateFormat("yyyy", Locale.getDefault())
-        val country = sharedPreferences.getString(SearchHistory.COUNTRY, null)
-        val trackTimeMillis = sharedPreferences.getLong(SearchHistory.TRACK_TIME_MILLIS, 0)
-        val trackName = sharedPreferences.getString(SearchHistory.TRACK_NAME, null)
-        val artistName = sharedPreferences.getString(SearchHistory.ARTIST_NAME, null)
-
         fun preparePlayer() {
-            mediaPlayer.setDataSource(previewUrl)
+            mediaPlayer.setDataSource(track.previewUrl())
             mediaPlayer.prepareAsync()
             mediaPlayer.setOnPreparedListener {
-                playButton.isEnabled = true
+                playButton?.isEnabled = true
                 playerState = STATE_PREPARED
             }
             mediaPlayer.setOnCompletionListener {
                 playerState = STATE_PREPARED
-                mediaPlayer.seekTo(0)
-                playButton.setImageResource(R.drawable.play)
-                playbackProgress.text = "00:00"
+                mediaPlayer.seekPlayer(INITIAL_POSITION)
+                playButton?.setImageResource(R.drawable.play)
+                playbackProgress.text = TIMER_START
                 mainThreadHandler?.removeCallbacks(progressRunnable)
+            }
+        }
+
+        fun startPlayer() {
+            mediaPlayer.startPlayer()
+            playerState = STATE_PLAYING
+            mainThreadHandler?.postDelayed(progressRunnable, DELAY_MILLIS)
+        }
+
+        fun pausePlayer() {
+            mediaPlayer.pausePlayer()
+            playerState = STATE_PAUSED
+        }
+
+        fun playbackControl() {
+            when(playerState) {
+                STATE_PLAYING -> {
+                    pausePlayer()
+                    playButton?.setImageResource(R.drawable.play)
+                }
+                STATE_PREPARED, STATE_PAUSED -> {
+                    startPlayer()
+                    playButton?.setImageResource(R.drawable.pause)
+                }
             }
         }
 
         preparePlayer()
 
-        playButton.setOnClickListener {
+        playButton?.setOnClickListener {
             playbackControl()
-
-            if (mediaPlayer.isPlaying) {
-                mediaPlayer.pause()
-                playButton.setImageResource(R.drawable.play)
-            } else {
-                mediaPlayer.start()
-                playButton.setImageResource(R.drawable.pause)
-            }
         }
+
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("yyyy", Locale.getDefault())
 
         fun String?.formatDate(): String? = try {
             this?.let {
@@ -103,18 +109,19 @@ class AudioPlayerActivity : AppCompatActivity() {
             null
         }
 
-        tvReleaseDate.text = releaseDate.formatDate()
-        tvCountry.text = country
-        tvTrackTimeMillis.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackTimeMillis)
-        tvPrimaryGenreName.text = primaryGenreName
-        tvCollectionName.text = collectionName
-        tvTrackName.text = trackName
-        tvArtistName.text = artistName
+        tvReleaseDate.text = track.releaseDate().formatDate()
+        tvCountry.text = track.country()
+        tvTrackTimeMillis.text =
+            SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis())
+        tvPrimaryGenreName.text = track.primaryGenreName()
+        tvCollectionName.text = track.collectionName()
+        tvTrackName.text = track.trackName()
+        tvArtistName.text = track.artistName()
 
 
 
         Glide.with(this)
-            .load(imageUrl)
+            .load(track.imageUrl())
             .error(R.drawable.placeholder)
             .placeholder(R.drawable.placeholder)
             .fitCenter()
@@ -123,7 +130,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         val imageButtonBack = findViewById<ImageButton>(R.id.button_back)
         imageButtonBack.setOnClickListener {
-            val intent = Intent(this, SearchActivity::class.java)
+            val intent = Intent(this, SearchTrackActivity::class.java)
             startActivity(intent)
         }
     }
@@ -131,10 +138,10 @@ class AudioPlayerActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (playerState == STATE_PLAYING) {
-            mediaPlayer.start()
-            playButton.setImageResource(R.drawable.pause)
+            mediaPlayer.startPlayer()
+            playButton?.setImageResource(R.drawable.pause)
             mainThreadHandler?.post(progressRunnable)
-    }
+        }
 
         if (isAppInBackground) {
             val intent = Intent(this, AudioPlayerActivity::class.java)
@@ -142,22 +149,21 @@ class AudioPlayerActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-
         isAppInBackground = false
     }
 
     override fun onPause() {
         super.onPause()
-        if (mediaPlayer.isPlaying) {
-            mediaPlayer.pause()
-            playButton.setImageResource(R.drawable.play)
+        if (mediaPlayer.isPlaing()) {
+            mediaPlayer.pausePlayer()
+            playButton?.setImageResource(R.drawable.play)
             mainThreadHandler?.removeCallbacks(progressRunnable)
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
+        mediaPlayer.releasePlayer()
     }
 
     private fun initViews() {
@@ -173,33 +179,10 @@ class AudioPlayerActivity : AppCompatActivity() {
         tvArtistName = findViewById(R.id.textView15)
     }
 
-    private fun startPlayer() {
-        mediaPlayer.start()
-        playerState = STATE_PLAYING
-        mainThreadHandler?.postDelayed(progressRunnable, DELAY)
-    }
-
-    private fun pausePlayer() {
-        mediaPlayer.pause()
-        playerState = STATE_PAUSED
-    }
-
-    private fun playbackControl() {
-        when(playerState) {
-            STATE_PLAYING -> {
-                pausePlayer()
-            }
-            STATE_PREPARED, STATE_PAUSED -> {
-                startPlayer()
-            }
-        }
-    }
-
     private val progressRunnable = object : Runnable {
         override fun run() {
-                val currentPosition = mediaPlayer.currentPosition
-            playbackProgress.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentPosition)
-            mainThreadHandler?.postDelayed(this, DELAY)
+            playbackProgress.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.getCurrentPosition())
+            mainThreadHandler?.postDelayed(this, DELAY_MILLIS)
         }
     }
 
@@ -208,6 +191,8 @@ class AudioPlayerActivity : AppCompatActivity() {
         private const val STATE_PREPARED = 1
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
-        const val DELAY = 300L
+        private const val INITIAL_POSITION = 0
+        private const val TIMER_START = "00:00"
+        const val DELAY_MILLIS = 300L
     }
 }
