@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.data.Impl
+package com.practicum.playlistmaker.data.impl
 
 import com.practicum.playlistmaker.data.NetworkClient
 import com.practicum.playlistmaker.data.dto.TrackDto
@@ -56,7 +56,7 @@ class TracksRepositoryImpl(
 
     override fun getTracks(): ArrayList<Track> {
         val trackDto = trackStorage.get()
-        val track = trackDto.map { it
+        val track = trackDto.map {
             Track(
                 it.id,
                 it.trackId,
@@ -72,14 +72,6 @@ class TracksRepositoryImpl(
             )
         }
         return ArrayList(track)
-    }
-
-    override fun darkMode(darkTheme: Boolean) {
-        trackStorage.darkMode(darkTheme)
-    }
-
-    override fun switchTheme(darkThemeEnabled: Boolean) {
-        trackStorage.switchTheme(darkThemeEnabled)
     }
 
     override fun clearHistory() {

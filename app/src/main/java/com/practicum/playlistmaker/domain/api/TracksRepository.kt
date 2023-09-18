@@ -10,10 +10,6 @@ interface TracksRepository {
 
     fun getTracks(): ArrayList<Track>
 
-    fun darkMode(darkTheme: Boolean)
-
-    fun switchTheme(darkThemeEnabled: Boolean)
-
     fun clearHistory()
 
     fun previewUrl(): String

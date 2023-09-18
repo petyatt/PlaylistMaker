@@ -10,7 +10,6 @@ import com.practicum.playlistmaker.data.storage.model.TrackStorage
 class SharedPrefsStorage(context: Context): TrackStorage  {
 
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences(SAVE_HISTORY, Context.MODE_PRIVATE)
-    private val sharedPreferencesDarkMode: SharedPreferences = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
     companion object {
         const val SAVE_HISTORY = "save_history"
@@ -27,8 +26,6 @@ class SharedPrefsStorage(context: Context): TrackStorage  {
         const val COLLECTION_NAME = "collection_Name"
         const val PRIMARY_GENRE_NAME = "primary_Genre_Name"
         const val PREVIEW_URL = "previewUrl"
-        const val PREFS = "prefs"
-        const val DARK_THEME = "dark_theme"
     }
 
     override fun save(trackDto: TrackDto) {
@@ -68,17 +65,6 @@ class SharedPrefsStorage(context: Context): TrackStorage  {
         val json = sharedPreferences.getString(KEY_SEARCH_HISTORY, null)
         val gson = GsonBuilder().create()
         return gson.fromJson(json, object : TypeToken<ArrayList<TrackDto>>() {}.type) ?: arrayListOf<TrackDto>()
-    }
-
-    override fun darkMode(darkTheme: Boolean) {
-        var darkTheme = false
-        darkTheme = sharedPreferencesDarkMode.getBoolean(DARK_THEME, false)
-    }
-
-    override fun switchTheme(darkThemeEnabled: Boolean) {
-        sharedPreferencesDarkMode.edit()
-            .putBoolean(DARK_THEME, darkThemeEnabled)
-            .apply()
     }
 
     override fun clearHistory() {

@@ -11,10 +11,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.practicum.playlistmaker.presentation.ui.switchTheme.App
+import com.practicum.playlistmaker.presentation.ui.App
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.presentation.ui.track.SearchTrackActivity
-import com.practicum.playlistmaker.domain.Creator
+import com.practicum.playlistmaker.Creator
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -130,8 +130,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         val imageButtonBack = findViewById<ImageButton>(R.id.button_back)
         imageButtonBack.setOnClickListener {
-            val intent = Intent(this, SearchTrackActivity::class.java)
-            startActivity(intent)
+            finish()
         }
     }
 
