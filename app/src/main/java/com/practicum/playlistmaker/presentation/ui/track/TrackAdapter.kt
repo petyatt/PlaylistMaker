@@ -1,21 +1,26 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.ui.track
 
+import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.Creator
+import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.presentation.ui.player.AudioPlayerActivity
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class TrackAdapter(private val searchHistory: SearchHistory) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
+class TrackAdapter(context: Context) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
 
-    var tracks = ArrayList<Track>()
+    private val tracksInteractor = Creator.provideTracksInteractor(context)
+    var tracks = tracksInteractor.getTracks()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_track, parent, false)
@@ -28,7 +33,7 @@ class TrackAdapter(private val searchHistory: SearchHistory) : RecyclerView.Adap
         holder.itemView.setOnClickListener {
             val intent = Intent(holder.itemView.context, AudioPlayerActivity::class.java)
             holder.itemView.context.startActivity(intent)
-            searchHistory.writeSearchHistory(track)
+            tracksInteractor.saveTrack(track)
             notifyDataSetChanged()
         }
     }

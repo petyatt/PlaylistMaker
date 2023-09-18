@@ -1,8 +1,7 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.ui.track
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -20,13 +19,13 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.practicum.playlistmaker.presentation.ui.main.MainActivity
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.Creator
+import com.practicum.playlistmaker.domain.api.TracksInteractor
+import com.practicum.playlistmaker.domain.models.Track
 
-class SearchActivity : AppCompatActivity() {
+class SearchTrackActivity : AppCompatActivity() {
 
     private lateinit var queryInput: EditText
     private lateinit var tracksList: RecyclerView
@@ -38,35 +37,51 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historyClearButton: Button
     private lateinit var progressBar: ProgressBar
 
-    private lateinit var searchHistory: SearchHistory
-    private lateinit var sharedPreferences: SharedPreferences
-
     private lateinit var adapter: TrackAdapter
     private lateinit var historySearchAdapter: TrackAdapter
 
-    private val iTunesSearchApiBaseUrl = "https://itunes.apple.com"
     private var mainThreadHandler: Handler? = null
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(iTunesSearchApiBaseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val iTunesService = retrofit.create(ItunesApiService::class.java)
-
-    private var tracks = ArrayList<Track>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+        val creator = Creator.provideTracksInteractor(this)
+
+        var tracks = creator.getTracks()
+
+        fun handleSearchFailure() {
+            tracksList.visibility = GONE
+            tracks.clear()
+            placeholderText.setText(R.string.error_not_internet)
+            showPlaceholderView(R.drawable.no_internet)
+            refreshButton.visibility = View.VISIBLE
+        }
+
+        fun handleSearchResponse(responseCode: Int, results: List<Track>?) {
+            if (responseCode == 200) {
+                progressBar.visibility = GONE
+                tracksList.visibility = View.VISIBLE
+                tracks.clear()
+                if (results?.isNotEmpty() == true) {
+                    tracks.addAll(results)
+                }
+                adapter.notifyDataSetChanged()
+
+                if (tracks.isEmpty()) {
+                    showEmptySearchResult()
+                } else {
+                    hidePlaceholderView()
+                }
+            } else {
+                handleSearchFailure()
+            }
+        }
+
         mainThreadHandler = Handler(Looper.getMainLooper())
 
-        sharedPreferences = getSharedPreferences(SAVE_HISTORY, Context.MODE_PRIVATE)
-        searchHistory = SearchHistory(sharedPreferences)
-
-        adapter = TrackAdapter(searchHistory)
-        historySearchAdapter = TrackAdapter(searchHistory)
+        adapter = TrackAdapter(this)
+        historySearchAdapter = TrackAdapter(this)
 
         queryInput = findViewById(R.id.inputEditText)
         tracksList = findViewById(R.id.recyclerView)
@@ -88,13 +103,10 @@ class SearchActivity : AppCompatActivity() {
         saveTrackListHistory.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         saveTrackListHistory.adapter = historySearchAdapter
 
-        val trackListHistory = sharedPreferences.getString(SearchHistory.KEY_SEARCH_HISTORY, null)
-        if (trackListHistory != null) {
-            historySearchAdapter.tracks = ArrayList(searchHistory.readSearchHistory())
-            historySearchAdapter.notifyDataSetChanged()
-        }
+        historySearchAdapter.tracks = ArrayList(creator.getTracks())
+        historySearchAdapter.notifyDataSetChanged()
 
-        val hasSearchHistory = searchHistory.readSearchHistory().isNotEmpty()
+        val hasSearchHistory = creator.getTracks().isNotEmpty()
         if (hasSearchHistory) {
             historyViewSearch.visibility = View.VISIBLE
             historyClearButton.visibility = View.VISIBLE
@@ -103,26 +115,31 @@ class SearchActivity : AppCompatActivity() {
             historyClearButton.visibility = GONE
         }
 
+        fun clearButtonVisibility(s: CharSequence?): Int {
+            val hasSearchHistory = creator.getTracks().isNotEmpty()
+            historyViewSearch.visibility = if (hasSearchHistory && !s.isNullOrEmpty()) View.VISIBLE else GONE
+            historyClearButton.visibility = if (hasSearchHistory && !s.isNullOrEmpty()) View.VISIBLE else GONE
+            saveTrackListHistory.visibility = if (s.isNullOrEmpty()) View.VISIBLE else GONE
+            return if (s.isNullOrEmpty()) GONE else View.VISIBLE
+        }
+
 
         fun performSearch() {
-            progressBar.visibility = View.VISIBLE
-            val searchQuery = queryInput.text.toString()
-            iTunesService.search(searchQuery)
-                .enqueue(object : Callback<TrackResponse> {
-                    override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
-                        progressBar.visibility = GONE
-                        handleSearchResponse(response.code(), response.body()?.results)
-                    }
-
-                    override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                        progressBar.visibility = GONE
-                        handleSearchFailure()
-                    }
-                })
+                val searchQuery = queryInput.text.toString()
+                progressBar.visibility = View.VISIBLE
+                creator.searchTracks(
+                    searchQuery,
+                    object : TracksInteractor.TracksConsumer {
+                        override fun consume(foundTracks: List<Track>) {
+                            mainThreadHandler?.post {
+                                handleSearchResponse(200, foundTracks)
+                            }
+                        }
+                    })
         }
 
         historyClearButton.setOnClickListener {
-            searchHistory.clearSearchHistory()
+            creator.clearHistory()
             historySearchAdapter.tracks.clear()
             historyViewSearch.visibility = GONE
             historyClearButton.visibility = GONE
@@ -202,7 +219,7 @@ class SearchActivity : AppCompatActivity() {
             tracksList.visibility = GONE
             tracks.clear()
             historySearchAdapter.tracks.clear()
-            historySearchAdapter.tracks.addAll(searchHistory.readSearchHistory())
+            historySearchAdapter.tracks.addAll(creator.getTracks())
             historySearchAdapter.notifyDataSetChanged()
             saveTrackListHistory.visibility = View.VISIBLE
             if(tracks.isEmpty()){
@@ -219,7 +236,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val SAVE_HISTORY = "save_history"
         const val PRODUCT_AMOUNT = "PRODUCT_AMOUNT"
         const val DELAY = 2000L
     }
@@ -234,41 +250,6 @@ class SearchActivity : AppCompatActivity() {
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         countValue = savedInstanceState.getInt(PRODUCT_AMOUNT, 0)
-    }
-
-    private fun clearButtonVisibility(s: CharSequence?): Int {
-        val hasSearchHistory = searchHistory.readSearchHistory().isNotEmpty()
-        historyViewSearch.visibility = if (hasSearchHistory && !s.isNullOrEmpty()) View.VISIBLE else GONE
-        historyClearButton.visibility = if (hasSearchHistory && !s.isNullOrEmpty()) View.VISIBLE else GONE
-        saveTrackListHistory.visibility = if (s.isNullOrEmpty()) View.VISIBLE else GONE
-        return if (s.isNullOrEmpty()) GONE else View.VISIBLE
-    }
-
-    private fun handleSearchResponse(responseCode: Int, results: List<Track>?) {
-        if (responseCode == 200) {
-            tracksList.visibility = View.VISIBLE
-            tracks.clear()
-            if (results?.isNotEmpty() == true) {
-                tracks.addAll(results)
-            }
-            adapter.notifyDataSetChanged()
-
-            if (tracks.isEmpty()) {
-                showEmptySearchResult()
-            } else {
-                hidePlaceholderView()
-            }
-        } else {
-            handleSearchFailure()
-        }
-    }
-
-    private fun handleSearchFailure() {
-        tracksList.visibility = GONE
-        tracks.clear()
-        placeholderText.setText(R.string.error_not_internet)
-        showPlaceholderView(R.drawable.no_internet)
-        refreshButton.visibility = View.VISIBLE
     }
 
     private fun showEmptySearchResult() {
