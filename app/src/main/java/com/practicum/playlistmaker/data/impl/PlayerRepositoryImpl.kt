@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.data.Impl
+package com.practicum.playlistmaker.data.impl
 
 import com.practicum.playlistmaker.data.dto.PlayerDataSource
 import com.practicum.playlistmaker.domain.api.PlayerRepository

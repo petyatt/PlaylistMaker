@@ -24,14 +24,6 @@ class TracksInteractorImpl(private val repository: TracksRepository) : TracksInt
         return repository.getTracks()
     }
 
-    override fun darkMode(darkTheme: Boolean) {
-        repository.darkMode(darkTheme)
-    }
-
-    override fun switchTheme(darkThemeEnabled: Boolean) {
-        repository.switchTheme(darkThemeEnabled)
-    }
-
     override fun clearHistory() {
         repository.clearHistory()
     }

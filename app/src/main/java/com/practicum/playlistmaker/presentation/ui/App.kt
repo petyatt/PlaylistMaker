@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.presentation.ui.switchTheme
+package com.practicum.playlistmaker.presentation.ui
 
 import android.app.Application
 import android.content.Context

@@ -1,15 +1,15 @@
-package com.practicum.playlistmaker.domain
+package com.practicum.playlistmaker
 
 import android.content.Context
 import com.practicum.playlistmaker.data.NetworkClient
-import com.practicum.playlistmaker.data.Impl.TracksRepositoryImpl
+import com.practicum.playlistmaker.data.impl.TracksRepositoryImpl
 import com.practicum.playlistmaker.data.network.RetrofitNetworkClient
 import com.practicum.playlistmaker.data.storage.model.TrackStorage
 import com.practicum.playlistmaker.data.storage.sharedprefs.SharedPrefsStorage
 import com.practicum.playlistmaker.domain.api.TracksInteractor
 import com.practicum.playlistmaker.domain.api.TracksRepository
 import com.practicum.playlistmaker.domain.impl.TracksInteractorImpl
-import com.practicum.playlistmaker.data.Impl.PlayerRepositoryImpl
+import com.practicum.playlistmaker.data.impl.PlayerRepositoryImpl
 import com.practicum.playlistmaker.data.dto.PlayerData
 import com.practicum.playlistmaker.data.dto.PlayerDataSource
 import com.practicum.playlistmaker.domain.api.PlayerInteractor

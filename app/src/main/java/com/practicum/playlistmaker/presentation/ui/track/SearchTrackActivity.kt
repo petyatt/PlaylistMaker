@@ -1,7 +1,6 @@
 package com.practicum.playlistmaker.presentation.ui.track
 
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -19,9 +18,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.practicum.playlistmaker.presentation.ui.main.MainActivity
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.domain.Creator
+import com.practicum.playlistmaker.Creator
 import com.practicum.playlistmaker.domain.api.TracksInteractor
 import com.practicum.playlistmaker.domain.models.Track
 
@@ -46,9 +44,9 @@ class SearchTrackActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        val creator = Creator.provideTracksInteractor(this)
+        val tracksInteractor = Creator.provideTracksInteractor(this)
 
-        var tracks = creator.getTracks()
+        var tracks = tracksInteractor.getTracks()
 
         fun handleSearchFailure() {
             tracksList.visibility = GONE
@@ -103,10 +101,10 @@ class SearchTrackActivity : AppCompatActivity() {
         saveTrackListHistory.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         saveTrackListHistory.adapter = historySearchAdapter
 
-        historySearchAdapter.tracks = ArrayList(creator.getTracks())
+        historySearchAdapter.tracks = ArrayList(tracksInteractor.getTracks())
         historySearchAdapter.notifyDataSetChanged()
 
-        val hasSearchHistory = creator.getTracks().isNotEmpty()
+        val hasSearchHistory = tracksInteractor.getTracks().isNotEmpty()
         if (hasSearchHistory) {
             historyViewSearch.visibility = View.VISIBLE
             historyClearButton.visibility = View.VISIBLE
@@ -116,7 +114,7 @@ class SearchTrackActivity : AppCompatActivity() {
         }
 
         fun clearButtonVisibility(s: CharSequence?): Int {
-            val hasSearchHistory = creator.getTracks().isNotEmpty()
+            val hasSearchHistory = tracksInteractor.getTracks().isNotEmpty()
             historyViewSearch.visibility = if (hasSearchHistory && !s.isNullOrEmpty()) View.VISIBLE else GONE
             historyClearButton.visibility = if (hasSearchHistory && !s.isNullOrEmpty()) View.VISIBLE else GONE
             saveTrackListHistory.visibility = if (s.isNullOrEmpty()) View.VISIBLE else GONE
@@ -127,7 +125,7 @@ class SearchTrackActivity : AppCompatActivity() {
         fun performSearch() {
                 val searchQuery = queryInput.text.toString()
                 progressBar.visibility = View.VISIBLE
-                creator.searchTracks(
+                tracksInteractor.searchTracks(
                     searchQuery,
                     object : TracksInteractor.TracksConsumer {
                         override fun consume(foundTracks: List<Track>) {
@@ -139,7 +137,7 @@ class SearchTrackActivity : AppCompatActivity() {
         }
 
         historyClearButton.setOnClickListener {
-            creator.clearHistory()
+            tracksInteractor.clearHistory()
             historySearchAdapter.tracks.clear()
             historyViewSearch.visibility = GONE
             historyClearButton.visibility = GONE
@@ -184,8 +182,7 @@ class SearchTrackActivity : AppCompatActivity() {
 
         val buttonBack = findViewById<Button>(R.id.button_back)
         buttonBack.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            finish()
         }
 
         val simpleTextWatcher = object : TextWatcher {
@@ -219,7 +216,7 @@ class SearchTrackActivity : AppCompatActivity() {
             tracksList.visibility = GONE
             tracks.clear()
             historySearchAdapter.tracks.clear()
-            historySearchAdapter.tracks.addAll(creator.getTracks())
+            historySearchAdapter.tracks.addAll(tracksInteractor.getTracks())
             historySearchAdapter.notifyDataSetChanged()
             saveTrackListHistory.visibility = View.VISIBLE
             if(tracks.isEmpty()){
