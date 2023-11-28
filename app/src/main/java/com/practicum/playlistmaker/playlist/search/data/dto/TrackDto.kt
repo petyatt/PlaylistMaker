@@ -1,6 +1,6 @@
-package com.practicum.playlistmaker.domain.models
+package com.practicum.playlistmaker.playlist.search.data.dto
 
-data class Track(
+data class TrackDto (
     val id: Long,
     val trackId: Long,
     val country: String,
@@ -12,4 +12,7 @@ data class Track(
     val artworkUrl100: String,
     val collectionName: String,
     val primaryGenreName: String
-)
+
+) {
+    fun getCoverArtwork() = artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")
+}

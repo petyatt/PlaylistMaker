@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.domain.api
+package com.practicum.playlistmaker.playlist.player.domain.api
 
 interface PlayerRepository {
 

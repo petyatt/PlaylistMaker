@@ -1,7 +1,7 @@
-package com.practicum.playlistmaker.data.impl
+package com.practicum.playlistmaker.playlist.player.data.impl
 
-import com.practicum.playlistmaker.data.dto.PlayerDataSource
-import com.practicum.playlistmaker.domain.api.PlayerRepository
+import com.practicum.playlistmaker.playlist.player.data.dto.PlayerDataSource
+import com.practicum.playlistmaker.playlist.player.domain.api.PlayerRepository
 
 class PlayerRepositoryImpl(private val playerDataSource: PlayerDataSource) : PlayerRepository {
 

@@ -1,13 +1,14 @@
-package com.practicum.playlistmaker.data.storage.sharedprefs
+package com.practicum.playlistmaker.playlist.storage.sharedPrefsStorage
 
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.practicum.playlistmaker.data.dto.TrackDto
-import com.practicum.playlistmaker.data.storage.model.TrackStorage
+import com.practicum.playlistmaker.playlist.search.data.dto.TrackDto
+import com.practicum.playlistmaker.playlist.storage.model.ThemeStorage
+import com.practicum.playlistmaker.playlist.storage.model.TrackStorage
 
-class SharedPrefsStorage(context: Context): TrackStorage  {
+class SharedPrefsStorage(context: Context): TrackStorage, ThemeStorage {
 
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences(SAVE_HISTORY, Context.MODE_PRIVATE)
 
@@ -26,6 +27,7 @@ class SharedPrefsStorage(context: Context): TrackStorage  {
         const val COLLECTION_NAME = "collection_Name"
         const val PRIMARY_GENRE_NAME = "primary_Genre_Name"
         const val PREVIEW_URL = "previewUrl"
+        const val DARK_THEME = "dark_theme"
     }
 
     override fun save(trackDto: TrackDto) {
@@ -73,46 +75,14 @@ class SharedPrefsStorage(context: Context): TrackStorage  {
             .apply()
     }
 
-    override fun previewUrl(): String {
-        return sharedPreferences.getString(PREVIEW_URL, null) ?: ""
+    override fun getTheme(): Boolean {
+        return sharedPreferences.getBoolean(DARK_THEME, false)
     }
 
-    override fun imageUrl(): String {
-        return sharedPreferences.getString(ARTWORK_URL_100, null) ?: ""
-    }
-
-    override fun collectionName(): String {
-        val collectionName = sharedPreferences.getString(COLLECTION_NAME, null)
-        return collectionName ?: ""
-    }
-
-    override fun primaryGenreName(): String {
-        val primaryGenreName = sharedPreferences.getString(PRIMARY_GENRE_NAME, null)
-        return primaryGenreName ?: ""
-    }
-
-    override fun releaseDate(): String {
-        val releaseDate = sharedPreferences.getString(RELEASE_DATE, null)
-        return releaseDate ?: ""
-    }
-
-    override fun country(): String {
-        val country = sharedPreferences.getString(COUNTRY, null)
-        return country ?: ""
-    }
-
-    override fun trackTimeMillis(): Long {
-        return sharedPreferences.getLong(TRACK_TIME_MILLIS, 0)
-    }
-
-    override fun trackName(): String {
-        val trackName = sharedPreferences.getString(TRACK_NAME, null)
-        return trackName ?: ""
-    }
-
-    override fun artistName(): String {
-        val artistName = sharedPreferences.getString(ARTIST_NAME, null)
-        return artistName ?: ""
+    override fun changeTheme(changed: Boolean) {
+        sharedPreferences.edit()
+            .putBoolean(DARK_THEME, changed)
+            .apply()
     }
 
 

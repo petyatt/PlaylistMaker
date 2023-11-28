@@ -2,7 +2,7 @@ package com.practicum.playlistmaker.playlist.application
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.practicum.playlistmaker.playlist.storage.sharedprefs.SharedPrefsStorage
+import com.practicum.playlistmaker.playlist.storage.sharedPrefsStorage.SharedPrefsStorage
 
 class App : Application() {
 

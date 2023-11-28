@@ -1,7 +1,7 @@
 package com.practicum.playlistmaker.playlist.settings.data.impl
 
-import com.practicum.playlistmaker.playlist.storage.sharedprefs.SharedPrefsStorage
 import com.practicum.playlistmaker.playlist.settings.domain.api.SettingsRepository
+import com.practicum.playlistmaker.playlist.storage.sharedPrefsStorage.SharedPrefsStorage
 
 class SettingsRepositoryImpl(private val storageTheme: SharedPrefsStorage) :
     SettingsRepository {

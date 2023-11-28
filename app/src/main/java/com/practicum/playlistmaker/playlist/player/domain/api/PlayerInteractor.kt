@@ -1,6 +1,6 @@
-package com.practicum.playlistmaker.data.dto
+package com.practicum.playlistmaker.playlist.player.domain.api
 
-interface PlayerDataSource {
+interface PlayerInteractor {
 
     fun startPlayer()
 

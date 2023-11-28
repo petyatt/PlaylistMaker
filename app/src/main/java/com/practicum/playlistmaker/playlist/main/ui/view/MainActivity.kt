@@ -1,13 +1,13 @@
-package com.practicum.playlistmaker.presentation.ui.main
+package com.practicum.playlistmaker.playlist.main.ui.view
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.presentation.ui.media.MediaActivity
-import com.practicum.playlistmaker.presentation.ui.settings.SettingsActivity
-import com.practicum.playlistmaker.presentation.ui.track.SearchTrackActivity
+import com.practicum.playlistmaker.playlist.search.ui.activity.SearchTrackActivity
+import com.practicum.playlistmaker.playlist.media.ui.view.MediaActivity
+import com.practicum.playlistmaker.playlist.settings.ui.view.SettingsActivity
 
 class MainActivity : AppCompatActivity() {
 

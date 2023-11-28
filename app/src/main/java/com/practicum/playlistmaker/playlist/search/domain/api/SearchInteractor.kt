@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.playlist.search.domain.api
 
-import Track
+import com.practicum.playlistmaker.playlist.search.domain.models.Track
 
 interface SearchInteractor {
 

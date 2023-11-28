@@ -1,6 +1,10 @@
-package com.practicum.playlistmaker.data.dto
+package com.practicum.playlistmaker.playlist.search.domain.models
 
-data class TrackDto (
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class Track(
     val id: Long,
     val trackId: Long,
     val country: String,
@@ -12,7 +16,4 @@ data class TrackDto (
     val artworkUrl100: String,
     val collectionName: String,
     val primaryGenreName: String
-
-) {
-    fun getCoverArtwork() = artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")
-}
+): Parcelable

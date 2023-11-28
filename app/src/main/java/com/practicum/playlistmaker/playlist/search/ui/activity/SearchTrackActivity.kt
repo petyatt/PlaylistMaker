@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.playlist.search.ui.activity
 
-import Track
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -17,6 +16,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.playlistmaker.playlist.player.ui.activity.AudioPlayerActivity
 import com.practicum.playlistmaker.playlist.search.domain.models.SearchState
+import com.practicum.playlistmaker.playlist.search.domain.models.Track
 import com.practicum.playlistmaker.playlist.search.ui.view_model.SearchTrackViewModel
 
 class SearchTrackActivity : AppCompatActivity() {
@@ -24,25 +24,17 @@ class SearchTrackActivity : AppCompatActivity() {
     private lateinit var viewModel: SearchTrackViewModel
     private lateinit var binding: ActivitySearchBinding
 
-    private val trackListAdapter = TrackAdapter(
-        object : TrackAdapter.TrackClickListener {
-            override fun onTrackClick(track: Track) {
-                if (viewModel.clickDebounce()) {
-                    saveTrackAndStartActivity(track)
-                }
-            }
+    private val trackListAdapter = TrackAdapter { track ->
+        if (viewModel.clickDebounce()) {
+            saveTrackAndStartActivity(track)
         }
-    )
+    }
 
-    private val trackListHistoryAdapter = TrackAdapter(
-        object : TrackAdapter.TrackClickListener {
-            override fun onTrackClick(track: Track) {
-                if (viewModel.clickDebounce()) {
-                    saveTrackAndStartActivity(track)
-                }
-            }
+    private val trackListHistoryAdapter = TrackAdapter { track ->
+        if (viewModel.clickDebounce()) {
+            saveTrackAndStartActivity(track)
         }
-    )
+    }
 
     private fun saveTrackAndStartActivity(track: Track) {
         viewModel.saveTrack(track)
@@ -156,6 +148,11 @@ class SearchTrackActivity : AppCompatActivity() {
             val hideKeyboard = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             hideKeyboard.hideSoftInputFromWindow(binding.inputEditText.windowToken, 0)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadSearchHistory()
     }
 
     private fun showPlaceholderView(placeholderImageRes: Int) {

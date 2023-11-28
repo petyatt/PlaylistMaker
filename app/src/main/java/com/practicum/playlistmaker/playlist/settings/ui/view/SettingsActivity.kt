@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.presentation.ui.settings
+package com.practicum.playlistmaker.playlist.settings.ui.view
 
 import android.content.Intent
 import android.net.Uri
@@ -6,9 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import com.google.android.material.switchmaterial.SwitchMaterial
-import com.practicum.playlistmaker.presentation.ui.App
-import com.practicum.playlistmaker.presentation.ui.main.MainActivity
+import com.practicum.playlistmaker.playlist.main.ui.view.MainActivity
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.playlist.application.App
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,8 +17,8 @@ class SettingsActivity : AppCompatActivity() {
 
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
         themeSwitcher.isChecked = (application as App).darkTheme
-        themeSwitcher.setOnCheckedChangeListener { _ , Checked ->
-            (application as App).switchTheme(Checked)
+        themeSwitcher.setOnCheckedChangeListener { _ , checked ->
+            (application as App).switchTheme(checked)
         }
 
         val buttonBack = findViewById<Button>(R.id.button_back)

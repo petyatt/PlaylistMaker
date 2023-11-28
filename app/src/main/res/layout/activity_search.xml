@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="?attr/colorPrimaryVariant"
     android:orientation="vertical"
-    tools:context=".presentation.ui.main.MainActivity">
+    tools:context=".playlist.main.ui.view.MainActivity">
 
     <Button
         android:id="@+id/button_back"
@@ -45,7 +45,7 @@
     </FrameLayout>
 
     <TextView
-        android:id="@+id/historyViewSearch"
+        android:id="@+id/tvHistoryView"
         style="@style/historyViewSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
         tools:visibility="visible"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/recyclerViewTrack"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

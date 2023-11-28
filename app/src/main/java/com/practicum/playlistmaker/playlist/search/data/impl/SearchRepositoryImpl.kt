@@ -1,12 +1,12 @@
 package com.practicum.playlistmaker.playlist.search.data.impl
 
-import Track
 import com.practicum.playlistmaker.playlist.search.data.network.NetworkClient
 import com.practicum.playlistmaker.playlist.search.data.dto.TrackDto
 import com.practicum.playlistmaker.playlist.search.data.dto.TrackSearchResponse
 import com.practicum.playlistmaker.playlist.search.data.dto.TracksSearchRequest
 import com.practicum.playlistmaker.playlist.storage.model.TrackStorage
 import com.practicum.playlistmaker.playlist.search.domain.api.SearchRepository
+import com.practicum.playlistmaker.playlist.search.domain.models.Track
 import com.practicum.playlistmaker.playlist.util.Resource
 
 class SearchRepositoryImpl(

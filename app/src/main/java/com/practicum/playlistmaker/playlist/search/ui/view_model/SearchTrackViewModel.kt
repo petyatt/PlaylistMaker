@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.playlist.search.ui.view_model
 
-import Track
 import android.app.Application
 import android.os.Handler
 import android.os.Looper
@@ -14,6 +13,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.practicum.playlistmaker.playlist.search.domain.api.SearchInteractor
 import com.practicum.playlistmaker.playlist.search.domain.models.SearchState
+import com.practicum.playlistmaker.playlist.search.domain.models.Track
 import com.practicum.playlistmaker.playlist.util.Creator
 
 class SearchTrackViewModel(application: Application): AndroidViewModel(application) {
@@ -106,6 +106,11 @@ class SearchTrackViewModel(application: Application): AndroidViewModel(applicati
     fun saveTrack(track: Track) {
         tracksInteractor.saveTrack(track)
 
+    }
+
+    fun loadSearchHistory() {
+        val updatedHistory = tracksInteractor.getTracks()
+        _searchHistory.postValue(updatedHistory)
     }
 
     companion object {

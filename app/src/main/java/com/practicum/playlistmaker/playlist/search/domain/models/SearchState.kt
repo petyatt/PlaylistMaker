@@ -1,7 +1,4 @@
 package com.practicum.playlistmaker.playlist.search.domain.models
-
-import Track
-
 sealed interface SearchState{
 
     object Loading : SearchState

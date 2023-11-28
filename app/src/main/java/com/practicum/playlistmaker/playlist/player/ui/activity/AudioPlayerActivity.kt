@@ -1,8 +1,6 @@
 package com.practicum.playlistmaker.playlist.player.ui.activity
 
-import Track
 import android.os.Bundle
-import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -11,6 +9,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
 import com.practicum.playlistmaker.playlist.player.domain.models.PlayerState
 import com.practicum.playlistmaker.playlist.player.ui.view_model.AudioPlayerViewModel
+import com.practicum.playlistmaker.playlist.search.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
