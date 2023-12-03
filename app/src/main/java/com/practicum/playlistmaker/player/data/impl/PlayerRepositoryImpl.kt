@@ -21,8 +21,8 @@ class PlayerRepositoryImpl(private val playerDataSource: PlayerDataSource) : Pla
         playerDataSource.releasePlayer()
     }
 
-    override fun isPlaing(): Boolean {
-        return playerDataSource.isPlaing()
+    override fun isPlaying(): Boolean {
+        return playerDataSource.isPlaying()
     }
 
     override fun getCurrentPosition(): Int {

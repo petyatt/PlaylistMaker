@@ -25,7 +25,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val track = intent.getParcelableExtra<Track>("track")
+        val track = intent.getSerializableExtra("track") as Track
 
         viewModel = ViewModelProvider(this, AudioPlayerViewModel.getViewModelFactory())[AudioPlayerViewModel::class.java]
 
@@ -45,7 +45,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             }
         }
 
-        track?.previewUrl?.let { viewModel.preparePlayer(it) }
+        track.previewUrl.let { viewModel.preparePlayer(it) }
 
         viewModel.progressTimer.observe(this) { progress ->
             binding.playbackProgress.text = progress
@@ -56,17 +56,17 @@ class AudioPlayerActivity : AppCompatActivity() {
             viewModel.playbackControl()
         }
 
-        binding.tvYear.text = track?.releaseDate?.substring(0, 4)
-        binding.tvCountry.text = track?.country
+        binding.tvYear.text = track.releaseDate.substring(0, 4)
+        binding.tvCountry.text = track.country
         binding.tvDuration.text =
-            SimpleDateFormat("mm:ss", Locale.getDefault()).format(track?.trackTimeMillis)
-        binding.tvGenre.text = track?.primaryGenreName
-        binding.tvAlbum.text = track?.collectionName
-        binding.textView14.text = track?.trackName
-        binding.textView15.text = track?.artistName
+            SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
+        binding.tvGenre.text = track.primaryGenreName
+        binding.tvAlbum.text = track.collectionName
+        binding.textView14.text = track.trackName
+        binding.textView15.text = track.artistName
 
         Glide.with(this)
-            .load(track?.artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg"))
+            .load(track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"))
             .error(R.drawable.placeholder)
             .placeholder(R.drawable.placeholder)
             .fitCenter()

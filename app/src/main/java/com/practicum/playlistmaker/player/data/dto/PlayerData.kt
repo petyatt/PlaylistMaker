@@ -28,7 +28,7 @@ class PlayerData : PlayerDataSource {
         mediaPlayer.release()
     }
 
-    override fun isPlaing(): Boolean {
+    override fun isPlaying(): Boolean {
         return mediaPlayer.isPlaying
     }
 

@@ -21,8 +21,8 @@ class PlayerInteractorImpl(private val playerRepository: PlayerRepository): Play
         playerRepository.releasePlayer()
     }
 
-    override fun isPlaing(): Boolean {
-        return playerRepository.isPlaing()
+    override fun isPlaying(): Boolean {
+        return playerRepository.isPlaying()
     }
 
     override fun getCurrentPosition(): Int {

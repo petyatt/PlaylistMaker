@@ -10,7 +10,7 @@ interface PlayerDataSource {
 
     fun releasePlayer()
 
-    fun isPlaing(): Boolean
+    fun isPlaying(): Boolean
 
     fun getCurrentPosition(): Int
 
