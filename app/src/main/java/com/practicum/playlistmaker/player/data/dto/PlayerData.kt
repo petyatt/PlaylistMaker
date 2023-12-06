@@ -2,9 +2,7 @@ package com.practicum.playlistmaker.player.data.dto
 
 import android.media.MediaPlayer
 
-class PlayerData : PlayerDataSource {
-
-    private val mediaPlayer = MediaPlayer()
+class PlayerData(private val mediaPlayer: MediaPlayer) : PlayerDataSource {
 
     override fun seekPlayer(position: Int) {
         mediaPlayer.seekTo(position)

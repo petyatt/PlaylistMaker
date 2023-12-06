@@ -1,30 +1,22 @@
 package com.practicum.playlistmaker.search.ui.view_model
 
-import android.app.Application
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.lifecycle.ViewModel
 import com.practicum.playlistmaker.search.domain.api.SearchInteractor
 import com.practicum.playlistmaker.search.domain.models.SearchState
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.util.Creator
 
-class SearchTrackViewModel(application: Application): AndroidViewModel(application) {
+class SearchTrackViewModel(private val searchInteractor: SearchInteractor): ViewModel() {
 
-    val tracksInteractor = Creator.provideTracksInteractor(getApplication())
-    var tracks = tracksInteractor.getTracks()
     private val handler = Handler(Looper.getMainLooper())
     private var latestSearchText: String? = null
     private var isClickAllowed = true
 
-    private val _searchHistory = MutableLiveData(tracks)
+    private val _searchHistory = MutableLiveData(searchInteractor.getTracks())
     fun observerSearchHistory(): LiveData<ArrayList<Track>> = _searchHistory
 
     private val _stateLiveData = MutableLiveData<SearchState>()
@@ -52,7 +44,7 @@ class SearchTrackViewModel(application: Application): AndroidViewModel(applicati
          if (newSearchText.isNotEmpty()) {
              render(SearchState.Loading)
 
-             tracksInteractor.searchTracks(newSearchText, object : SearchInteractor.TracksConsumer {
+             searchInteractor.searchTracks(newSearchText, object : SearchInteractor.TracksConsumer {
                  override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
                      val tracks = mutableListOf<Track>()
                      if (foundTracks != null) {
@@ -100,17 +92,17 @@ class SearchTrackViewModel(application: Application): AndroidViewModel(applicati
     }
 
     fun clearHistory() {
-        tracksInteractor.clearHistory()
+        searchInteractor.clearHistory()
     }
 
     fun saveTrack(track: Track) {
-        tracksInteractor.saveTrack(track)
+        searchInteractor.saveTrack(track)
         loadSearchHistory()
 
     }
 
     fun loadSearchHistory() {
-        val updatedHistory = tracksInteractor.getTracks()
+        val updatedHistory = searchInteractor.getTracks()
         _searchHistory.postValue(updatedHistory)
     }
 
@@ -124,11 +116,5 @@ class SearchTrackViewModel(application: Application): AndroidViewModel(applicati
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         private val SEARCH_REQUEST_TOKEN = Any()
-
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SearchTrackViewModel(this[APPLICATION_KEY] as Application)
-            }
-        }
     }
 }

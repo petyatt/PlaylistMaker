@@ -1,9 +1,9 @@
 package com.practicum.playlistmaker.settings.data.impl
 
+import com.practicum.playlistmaker.settings.data.localstorage.LocalThemeStorage
 import com.practicum.playlistmaker.settings.domain.api.SettingsRepository
-import com.practicum.playlistmaker.storage.sharedPrefsStorage.SharedPrefsStorage
 
-class SettingsRepositoryImpl(private val storageTheme: SharedPrefsStorage) :
+class SettingsRepositoryImpl(private val storageTheme: LocalThemeStorage) :
     SettingsRepository {
     override fun changeTheme(changed: Boolean) {
         storageTheme.changeTheme(changed)

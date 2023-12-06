@@ -10,7 +10,6 @@ import android.view.View.VISIBLE
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
@@ -18,11 +17,12 @@ import com.practicum.playlistmaker.player.ui.activity.AudioPlayerActivity
 import com.practicum.playlistmaker.search.domain.models.SearchState
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.view_model.SearchTrackViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchTrackActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: SearchTrackViewModel
     private lateinit var binding: ActivitySearchBinding
+    private val viewModel by viewModel<SearchTrackViewModel>()
 
     private val trackListAdapter = TrackAdapter { track ->
         if (viewModel.clickDebounce()) {
@@ -49,8 +49,6 @@ class SearchTrackActivity : AppCompatActivity() {
 
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        viewModel = ViewModelProvider(this, SearchTrackViewModel.getViewModelFactory())[SearchTrackViewModel::class.java]
 
         viewModel.observeState().observe(this) {state ->
             when (state) {

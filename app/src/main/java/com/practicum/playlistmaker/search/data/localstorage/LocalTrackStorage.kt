@@ -1,18 +1,19 @@
-package com.practicum.playlistmaker.storage.sharedPrefsStorage
+package com.practicum.playlistmaker.search.data.localstorage
 
-import android.content.Context
 import android.content.SharedPreferences
-import com.google.gson.GsonBuilder
+import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.practicum.playlistmaker.search.data.dto.TrackDto
-import com.practicum.playlistmaker.storage.model.ThemeStorage
-import com.practicum.playlistmaker.storage.model.TrackStorage
+import com.practicum.playlistmaker.search.domain.models.TrackStorage
 
-class SharedPrefsStorage(context: Context): TrackStorage, ThemeStorage {
+class LocalTrackStorage(
+    private val sharedPreferences: SharedPreferences,
+    private var gson: Gson
+): TrackStorage {
 
-    private val sharedPreferences: SharedPreferences = context.getSharedPreferences(SAVE_HISTORY, Context.MODE_PRIVATE)
 
     companion object {
+        const val TRACK_SHARED_PREFERENCES = "trackSharedPreferences"
         const val SAVE_HISTORY = "save_history"
         const val KEY_SEARCH_HISTORY = "key_search_history"
         const val LIMITATIONS_HISTORY_TRACKS = 10
@@ -27,7 +28,6 @@ class SharedPrefsStorage(context: Context): TrackStorage, ThemeStorage {
         const val COLLECTION_NAME = "collection_Name"
         const val PRIMARY_GENRE_NAME = "primary_Genre_Name"
         const val PREVIEW_URL = "previewUrl"
-        const val DARK_THEME = "dark_theme"
     }
 
     override fun save(trackDto: TrackDto) {
@@ -47,7 +47,6 @@ class SharedPrefsStorage(context: Context): TrackStorage, ThemeStorage {
         }
 
         val json = sharedPreferences.getString(KEY_SEARCH_HISTORY, null)
-        val gson = GsonBuilder().create()
         val currentHistory: MutableList<TrackDto> =
             gson.fromJson(json, object : TypeToken<MutableList<TrackDto>>() {}.type) ?: mutableListOf()
 
@@ -65,23 +64,12 @@ class SharedPrefsStorage(context: Context): TrackStorage, ThemeStorage {
 
     override fun get(): ArrayList<TrackDto> {
         val json = sharedPreferences.getString(KEY_SEARCH_HISTORY, null)
-        val gson = GsonBuilder().create()
         return gson.fromJson(json, object : TypeToken<ArrayList<TrackDto>>() {}.type) ?: arrayListOf()
     }
 
     override fun clearHistory() {
         sharedPreferences.edit()
             .remove(KEY_SEARCH_HISTORY)
-            .apply()
-    }
-
-    override fun getTheme(): Boolean {
-        return sharedPreferences.getBoolean(DARK_THEME, false)
-    }
-
-    override fun changeTheme(changed: Boolean) {
-        sharedPreferences.edit()
-            .putBoolean(DARK_THEME, changed)
             .apply()
     }
 

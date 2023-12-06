@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.storage.model
+package com.practicum.playlistmaker.settings.domain.model
 
 interface ThemeStorage {
 

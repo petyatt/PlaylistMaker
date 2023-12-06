@@ -1,15 +1,15 @@
 package com.practicum.playlistmaker.settings.domain.impl
 
-import com.practicum.playlistmaker.settings.data.impl.SettingsRepositoryImpl
 import com.practicum.playlistmaker.settings.domain.api.SettingsInteractor
+import com.practicum.playlistmaker.settings.domain.api.SettingsRepository
 
-class SettingsInteractorImpl(private val settingsRepositoryImpl: SettingsRepositoryImpl) :
+class SettingsInteractorImpl(private val settingsRepository: SettingsRepository) :
     SettingsInteractor {
     override fun changeTheme(changed: Boolean) {
-        settingsRepositoryImpl.changeTheme(changed)
+        settingsRepository.changeTheme(changed)
     }
 
     override fun getTheme(): Boolean {
-        return settingsRepositoryImpl.getTheme()
+        return settingsRepository.getTheme()
     }
 }
