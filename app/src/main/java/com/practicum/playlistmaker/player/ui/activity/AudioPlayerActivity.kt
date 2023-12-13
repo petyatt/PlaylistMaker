@@ -2,7 +2,6 @@ package com.practicum.playlistmaker.player.ui.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
@@ -10,13 +9,14 @@ import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
 import com.practicum.playlistmaker.player.domain.models.PlayerState
 import com.practicum.playlistmaker.player.ui.view_model.AudioPlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class AudioPlayerActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: AudioPlayerViewModel
     private lateinit var binding: ActivityPlayerBinding
+    private val viewModel by viewModel<AudioPlayerViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,8 +26,6 @@ class AudioPlayerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val track = intent.getSerializableExtra("track") as Track
-
-        viewModel = ViewModelProvider(this, AudioPlayerViewModel.getViewModelFactory())[AudioPlayerViewModel::class.java]
 
         viewModel.playerState.observe(this) { state ->
             when (state) {
@@ -45,7 +43,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             }
         }
 
-        track.previewUrl.let { viewModel.preparePlayer(it) }
+        viewModel.preparePlayer(track.previewUrl)
 
         viewModel.progressTimer.observe(this) { progress ->
             binding.playbackProgress.text = progress

@@ -4,7 +4,7 @@ import com.practicum.playlistmaker.search.data.network.NetworkClient
 import com.practicum.playlistmaker.search.data.dto.TrackDto
 import com.practicum.playlistmaker.search.data.dto.TrackSearchResponse
 import com.practicum.playlistmaker.search.data.dto.TracksSearchRequest
-import com.practicum.playlistmaker.storage.model.TrackStorage
+import com.practicum.playlistmaker.search.domain.models.TrackStorage
 import com.practicum.playlistmaker.search.domain.api.SearchRepository
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.util.Resource

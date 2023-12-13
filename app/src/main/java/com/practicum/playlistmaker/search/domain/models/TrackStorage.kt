@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.storage.model
+package com.practicum.playlistmaker.search.domain.models
 
 import com.practicum.playlistmaker.search.data.dto.TrackDto
 

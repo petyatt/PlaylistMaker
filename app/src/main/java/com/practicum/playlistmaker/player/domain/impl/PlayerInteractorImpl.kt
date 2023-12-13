@@ -44,6 +44,4 @@ class PlayerInteractorImpl(private val playerRepository: PlayerRepository): Play
     override fun setOnCompletionListener(onCompletionListener: () -> Unit) {
         playerRepository.setOnCompletionListener(onCompletionListener)
     }
-
-
 }
