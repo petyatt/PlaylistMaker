@@ -24,7 +24,7 @@ class MediaActivity : AppCompatActivity() {
             tab.text = when(position) {
                 0 -> resources.getString(R.string.favorites_tracks)
                 1 -> resources.getString(R.string.playlists)
-                else -> ""
+                else -> "tab"
             }
         }
 
