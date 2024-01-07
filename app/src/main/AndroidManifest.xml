@@ -17,19 +17,19 @@
         android:theme="@style/Theme.MyPlaylistmaker"
         tools:targetApi="34">
         <activity
-            android:name=".settings.ui.view.SettingsActivity"
+            android:name=".settings.ui.view.SettingsFragment"
             android:exported="false"/>
         <activity
             android:name=".player.ui.activity.AudioPlayerActivity"
             android:exported="false"/>
         <activity
-            android:name=".search.ui.activity.SearchTrackActivity"
+            android:name=".search.ui.activity.SearchFragment"
             android:exported="false"/>
         <activity
-            android:name=".media.ui.view.MediaActivity"
+            android:name=".media.ui.view.MediaFragment"
             android:exported="false"/>
         <activity
-            android:name=".main.ui.view.MainActivity"
+            android:name=".root.RootActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

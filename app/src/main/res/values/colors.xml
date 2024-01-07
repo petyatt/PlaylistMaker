@@ -6,4 +6,5 @@
     <color name="thumbTint">#AEAFB4</color>
     <color name="trackTint">#E6E8EB</color>
     <color name="textColorHint">#AEAFB4</color>
+    <color name="lightGrey">#E6E8EB</color>
 </resources>
