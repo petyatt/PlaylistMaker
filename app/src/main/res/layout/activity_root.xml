@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorPrimaryVariant"
     tools:context=".root.RootActivity">
 
     <androidx.fragment.app.FragmentContainerView
@@ -22,7 +21,8 @@
         android:id="@+id/line"
         style="@style/colorLine"
         android:layout_width="0dp"
-        android:layout_height="0.5dp"
+        android:layout_height="1dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@id/bottom_Navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,11 +31,8 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_Navigation"
         style="@style/bottom_navigation_menu"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/ys_display_regular"
-        android:textSize="12sp"
-        android:backgroundTint="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="68dp"
         app:itemIconTint="@drawable/selector_bottom_navigation_item"
         app:itemTextColor="@drawable/selector_bottom_navigation_item"
         app:labelVisibilityMode="labeled"
@@ -43,5 +40,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/line"
-        app:menu="@menu/bottom_navigation"/>
+        app:menu="@menu/bottom_navigation" />
 </androidx.constraintlayout.widget.ConstraintLayout>

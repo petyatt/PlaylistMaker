@@ -11,7 +11,8 @@ import com.practicum.playlistmaker.databinding.FragmentMediaBinding
 
 class MediaFragment: Fragment() {
 
-    private lateinit var binding: FragmentMediaBinding
+    private var _binding: FragmentMediaBinding? = null
+    private val binding get() = _binding!!
     private lateinit var tabLayoutMediator: TabLayoutMediator
 
     override fun onCreateView(
@@ -20,16 +21,15 @@ class MediaFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         super.onCreate(savedInstanceState)
-        binding = FragmentMediaBinding.inflate(layoutInflater)
+        _binding = FragmentMediaBinding.inflate(layoutInflater)
 
         binding.viewPager.adapter = MediaViewPagerAdapter(childFragmentManager, lifecycle)
 
         tabLayoutMediator =
             TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
                 tab.text = when (position) {
-                    0 -> resources.getString(R.string.favorites_tracks)
                     1 -> resources.getString(R.string.playlists)
-                    else -> "tab"
+                    else -> resources.getString(R.string.favorites_tracks)
                 }
             }
 
@@ -41,5 +41,6 @@ class MediaFragment: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         tabLayoutMediator.detach()
+        _binding = null
     }
 }

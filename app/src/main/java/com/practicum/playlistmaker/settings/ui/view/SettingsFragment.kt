@@ -13,14 +13,15 @@ import com.practicum.playlistmaker.databinding.FragmentSettingsBinding
 
 class SettingsFragment: Fragment() {
 
-    private lateinit var binding: FragmentSettingsBinding
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
 
         super.onCreate(savedInstanceState)
 
@@ -60,7 +61,8 @@ class SettingsFragment: Fragment() {
         return  binding.root
     }
 
-//    companion object{
-//        fun newInstance() = SettingsFragment()
-//    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

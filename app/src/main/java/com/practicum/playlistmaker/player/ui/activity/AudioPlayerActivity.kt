@@ -15,14 +15,15 @@ import java.util.Locale
 
 class AudioPlayerActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityPlayerBinding
+    private var _binding: ActivityPlayerBinding? = null
+    private val binding get() = _binding!!
     private val viewModel by viewModel<AudioPlayerViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 
-        binding = ActivityPlayerBinding.inflate(layoutInflater)
+        _binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val track = intent.getSerializableExtra("track") as Track
@@ -95,5 +96,6 @@ class AudioPlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.releasePlayer()
+        _binding = null
     }
 }

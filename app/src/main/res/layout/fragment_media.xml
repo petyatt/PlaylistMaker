@@ -17,7 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_Mediateka"
+        app:layout_constraintTop_toBottomOf="@+id/text_mediateka"
         app:layout_constraintVertical_bias="0.026"
         tools:ignore="HardcodedText" />
 
@@ -33,7 +33,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <TextView
-        android:id="@+id/text_Mediateka"
+        android:id="@+id/text_mediateka"
         style="@style/TextViewStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

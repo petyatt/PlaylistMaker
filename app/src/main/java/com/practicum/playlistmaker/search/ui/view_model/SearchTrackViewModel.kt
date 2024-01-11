@@ -97,7 +97,6 @@ class SearchTrackViewModel(private val searchInteractor: SearchInteractor): View
 
     fun saveTrack(track: Track) {
         searchInteractor.saveTrack(track)
-        loadSearchHistory()
 
     }
 
