@@ -27,4 +27,5 @@
     <dimen name="marginTop_80dp">80dp</dimen>
     <dimen name="ts_11sp">11sp</dimen>
     <dimen name="ts_16sp">16sp</dimen>
+    <dimen name="ts_12sp">11sp</dimen>
 </resources>

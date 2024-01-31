@@ -2,33 +2,36 @@ package com.practicum.playlistmaker.settings.ui.view
 
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import com.google.android.material.switchmaterial.SwitchMaterial
-import com.practicum.playlistmaker.main.ui.view.MainActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.application.App
+import com.practicum.playlistmaker.databinding.FragmentSettingsBinding
 
-class SettingsActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
+class SettingsFragment: Fragment() {
+
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
 
-        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
-        themeSwitcher.isChecked = (application as App).darkTheme
-        themeSwitcher.setOnCheckedChangeListener { _ , checked ->
-            (application as App).switchTheme(checked)
+        val appInstance = requireActivity().application as? App
+        binding.themeSwitcher.isChecked = appInstance?.darkTheme ?: false
+        binding.themeSwitcher.setOnCheckedChangeListener { _, checked ->
+            appInstance?.switchTheme(checked)
         }
 
-        val buttonBack = findViewById<Button>(R.id.button_back)
-        buttonBack.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
-
-        val shareApp = findViewById<Button>(R.id.button_share_app)
-        shareApp.setOnClickListener {
+        binding.buttonShareApp.setOnClickListener {
             val intent = Intent(Intent.ACTION_SEND)
             intent.type = getString(R.string.text_plain)
             val  appUrl = getString(R.string.https_yandex_ru_practicum)
@@ -36,8 +39,7 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        val writeSupport = findViewById<Button>(R.id.button_write_support)
-        writeSupport.setOnClickListener {
+        binding.buttonWriteSupport.setOnClickListener {
             val intent = Intent(Intent.ACTION_SENDTO)
             intent.data = Uri.parse(getString(R.string.mailto_petya_07_yandex_ru))
             intent.putExtra(
@@ -51,11 +53,16 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        val userAgreement = findViewById<Button>(R.id.button_user_agreement)
-        userAgreement.setOnClickListener {
+        binding.buttonUserAgreement.setOnClickListener {
             val agreementUrl = getString(R.string.https_yandex_ru_legal_practicum_offer)
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(agreementUrl))
             startActivity(intent)
         }
+        return  binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

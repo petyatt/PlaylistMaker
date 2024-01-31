@@ -1,27 +1,30 @@
-package com.practicum.playlistmaker.search.ui.activity
+package com.practicum.playlistmaker.search.ui.view
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.databinding.ActivitySearchBinding
+import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.player.ui.activity.AudioPlayerActivity
 import com.practicum.playlistmaker.search.domain.models.SearchState
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.view_model.SearchTrackViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchTrackActivity : AppCompatActivity() {
+class SearchFragment: Fragment() {
 
-    private lateinit var binding: ActivitySearchBinding
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
     private val viewModel by viewModel<SearchTrackViewModel>()
 
     private val trackListAdapter = TrackAdapter { track ->
@@ -38,19 +41,23 @@ class SearchTrackActivity : AppCompatActivity() {
 
     private fun saveTrackAndStartActivity(track: Track) {
         viewModel.saveTrack(track)
-        val intent = Intent(this@SearchTrackActivity, AudioPlayerActivity::class.java)
+        val intent = Intent(requireContext(), AudioPlayerActivity::class.java)
         intent.putExtra("track", track)
         startActivity(intent)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentSearchBinding.inflate(layoutInflater)
+        return binding.root
+    }
 
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        viewModel.observeState().observe(this) {state ->
+        viewModel.observeState().observe(viewLifecycleOwner) {state ->
             when (state) {
                 is SearchState.Loading -> showLoading()
                 is SearchState.Content -> showContent(state.tracks)
@@ -59,64 +66,60 @@ class SearchTrackActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.observerSearchHistory().observe(this) {
+        viewModel.observerSearchHistory().observe(viewLifecycleOwner) {
             showHistoryTracks(it)
         }
 
-        binding.recyclerViewTrack.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerViewTrack.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerViewTrack.adapter = trackListAdapter
 
-        binding.recyclerViewHistory.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerViewHistory.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerViewHistory.adapter = trackListHistoryAdapter
 
         fun clearButtonVisibility(s: CharSequence?): Int {
             viewModel.loadSearchHistory()
-            binding.tvHistoryView.visibility = GONE
-            binding.historyClearButton.visibility = GONE
-            binding.recyclerViewHistory.visibility = GONE
-            binding.recyclerViewTrack.visibility = GONE
-            binding.progressBar.visibility = GONE
-            binding.placeholderView.visibility = GONE
-            binding.placeholderText.visibility = GONE
-            binding.refrechButton.visibility = GONE
+            binding.tvHistoryView.isVisible = false
+            binding.historyClearButton.isVisible = false
+            binding.recyclerViewHistory.isVisible = false
+            binding.recyclerViewTrack.isVisible = false
+            binding.progressBar.isVisible = false
+            binding.placeholderView.isVisible = false
+            binding.placeholderText.isVisible = false
+            binding.refrechButton.isVisible = false
 
-            return if (s.isNullOrEmpty()) GONE else VISIBLE
+            return if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
         }
 
         binding.historyClearButton.setOnClickListener {
             viewModel.clearHistory()
-            binding.tvHistoryView.visibility = GONE
-            binding.historyClearButton.visibility = GONE
+            binding.tvHistoryView.isVisible = false
+            binding.historyClearButton.isVisible = false
             trackListHistoryAdapter.tracks.clear()
             trackListHistoryAdapter.notifyDataSetChanged()
         }
 
         binding.refrechButton.setOnClickListener {
-            binding.placeholderView.visibility = GONE
-            binding.placeholderText.visibility = GONE
-            binding.refrechButton.visibility = GONE
+            binding.placeholderView.isVisible = false
+            binding.placeholderText.isVisible = false
+            binding.refrechButton.isVisible = false
 
         }
 
         binding.inputEditText.setOnFocusChangeListener { _ , hasFocus ->
-            binding.recyclerViewHistory.visibility = if (hasFocus && binding.inputEditText.text.isEmpty()) GONE else VISIBLE
-            binding.historyClearButton.visibility = if (hasFocus && binding.inputEditText.text.isEmpty()) GONE else VISIBLE
-            binding.tvHistoryView.visibility = if (hasFocus && binding.inputEditText.text.isEmpty()) GONE else VISIBLE
+            binding.recyclerViewHistory.isVisible = !(hasFocus && binding.inputEditText.text.isEmpty())
+            binding.historyClearButton.isVisible = !(hasFocus && binding.inputEditText.text.isEmpty())
+            binding.tvHistoryView.isVisible = !(hasFocus && binding.inputEditText.text.isEmpty())
         }
 
         binding.inputEditText.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 viewModel.searchDebounce(binding.inputEditText.text.toString())
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(v.windowToken, 0)
                 return@setOnEditorActionListener true
             } else {
                 return@setOnEditorActionListener false
             }
-        }
-
-        binding.buttonBack.setOnClickListener {
-            finish()
         }
 
         val textWatcher = object : TextWatcher {
@@ -129,9 +132,9 @@ class SearchTrackActivity : AppCompatActivity() {
                     changedText = s?.toString() ?:""
                 )
 
-                binding.recyclerViewHistory.visibility = if (binding.inputEditText.hasFocus() && s?.isEmpty() == true) GONE else VISIBLE
-                binding.tvHistoryView.visibility = if (binding.inputEditText.hasFocus() && s?.isEmpty() == true) GONE else VISIBLE
-                binding.historyClearButton.visibility = if (binding.inputEditText.hasFocus() && s?.isEmpty() == true) GONE else VISIBLE
+                binding.recyclerViewHistory.isVisible = !(binding.inputEditText.hasFocus() && s?.isEmpty() == true)
+                binding.tvHistoryView.isVisible = !(binding.inputEditText.hasFocus() && s?.isEmpty() == true)
+                binding.historyClearButton.isVisible = !(binding.inputEditText.hasFocus() && s?.isEmpty() == true)
 
                 trackListHistoryAdapter.notifyDataSetChanged()
 
@@ -144,7 +147,7 @@ class SearchTrackActivity : AppCompatActivity() {
 
         binding.clearIcon.setOnClickListener {
             binding.inputEditText.setText("")
-            val hideKeyboard = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val hideKeyboard = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             hideKeyboard.hideSoftInputFromWindow(binding.inputEditText.windowToken, 0)
         }
     }
@@ -156,33 +159,33 @@ class SearchTrackActivity : AppCompatActivity() {
 
     private fun showPlaceholderView(placeholderImageRes: Int) {
         binding.placeholderView.setImageResource(placeholderImageRes)
-        binding.placeholderView.visibility = VISIBLE
-        binding.placeholderText.visibility = VISIBLE
+        binding.placeholderView.isVisible = true
+        binding.placeholderText.isVisible = true
     }
 
     private fun showError() {
         binding.placeholderText.setText(R.string.error_not_internet)
         showPlaceholderView(R.drawable.no_internet)
-        binding.progressBar.visibility = GONE
-        binding.tvHistoryView.visibility = GONE
-        binding.historyClearButton.visibility = GONE
-        binding.refrechButton.visibility = VISIBLE
+        binding.progressBar.isVisible = false
+        binding.tvHistoryView.isVisible = false
+        binding.historyClearButton.isVisible = false
+        binding.refrechButton.isVisible = true
     }
 
     private fun showEmpty() {
         binding.placeholderText.setText(R.string.error_not_found)
         showPlaceholderView(R.drawable.no_search)
-        binding.progressBar.visibility = GONE
-        binding.tvHistoryView.visibility = GONE
-        binding.historyClearButton.visibility = GONE
+        binding.progressBar.isVisible = false
+        binding.tvHistoryView.isVisible = false
+        binding.historyClearButton.isVisible = false
     }
 
     private fun showContent(tracks: List<Track>) {
-        binding.recyclerViewTrack.visibility = VISIBLE
-        binding.recyclerViewHistory.visibility = GONE
-        binding.tvHistoryView.visibility = GONE
-        binding.historyClearButton.visibility = GONE
-        binding.progressBar.visibility = GONE
+        binding.recyclerViewTrack.isVisible = true
+        binding.recyclerViewHistory.isVisible = false
+        binding.tvHistoryView.isVisible = false
+        binding.historyClearButton.isVisible = false
+        binding.progressBar.isVisible = false
 
         trackListAdapter.tracks.clear()
         trackListAdapter.tracks.addAll(tracks)
@@ -191,26 +194,31 @@ class SearchTrackActivity : AppCompatActivity() {
 
     private fun showHistoryTracks(historyTracks: List<Track>) {
         if (historyTracks.isEmpty()) {
-            binding.recyclerViewHistory.visibility = GONE
-            binding.tvHistoryView.visibility = GONE
-            binding.historyClearButton.visibility = GONE
+            binding.recyclerViewHistory.isVisible = false
+            binding.tvHistoryView.isVisible = false
+            binding.historyClearButton.isVisible = false
         } else {
-            binding.recyclerViewHistory.visibility = VISIBLE
-            binding.tvHistoryView.visibility = VISIBLE
-            binding.historyClearButton.visibility = VISIBLE
+            binding.recyclerViewHistory.isVisible = true
+            binding.tvHistoryView.isVisible = true
+            binding.historyClearButton.isVisible = true
 
             trackListHistoryAdapter.tracks.clear()
             trackListHistoryAdapter.tracks.addAll(historyTracks)
             trackListHistoryAdapter.notifyDataSetChanged()
         }
-        binding.progressBar.visibility = GONE
-        binding.recyclerViewTrack.visibility = GONE
+        binding.progressBar.isVisible = false
+        binding.recyclerViewTrack.isVisible = false
     }
 
     private fun showLoading() {
-        binding.progressBar.visibility = VISIBLE
-        binding.tvHistoryView.visibility = GONE
-        binding.historyClearButton.visibility = GONE
-        binding.recyclerViewHistory.visibility = GONE
+        binding.progressBar.isVisible = true
+        binding.tvHistoryView.isVisible = false
+        binding.historyClearButton.isVisible = false
+        binding.recyclerViewHistory.isVisible = false
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

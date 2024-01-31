@@ -42,4 +42,7 @@
     <string name="favorites_tracks">Избранные треки</string>
     <string name="tab">tabLayout</string>
     <string name="button_back">Назад</string>
+    <string name="textMediateka">Медиатека</string>
+    <string name="text_Settings">Настройки</string>
+    <string name="text_Search">Поиск</string>
 </resources>

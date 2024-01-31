@@ -7,18 +7,16 @@
     android:layout_height="match_parent"
     android:background="?attr/colorPrimaryVariant"
     android:orientation="vertical"
-    tools:context=".main.ui.view.MainActivity">
+    tools:context=".root.RootActivity">
 
-    <Button
-        android:id="@+id/button_back"
-        style="@style/ButtonSettingsStyle"
+    <TextView
+        android:id="@+id/text_Search"
+        style="@style/TextViewStyle"
         android:layout_width="wrap_content"
-        android:gravity="start"
-        android:paddingTop="@dimen/paddingTop_14dp"
-        android:text="@string/search"
-        android:textSize="@dimen/text_Size_22sp"
-        app:icon="@drawable/back"
-        app:iconPadding="@dimen/iconPadding_28dp" />
+        android:layout_height="wrap_content"
+        android:text="@string/text_Search"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -107,7 +105,7 @@
         style="@style/buttonClear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_gravity="bottom|center_horizontal"
         android:layout_marginTop="24dp"
         android:fontFamily="@font/ys_display_medium"
         android:gravity="center_vertical|center_horizontal"
