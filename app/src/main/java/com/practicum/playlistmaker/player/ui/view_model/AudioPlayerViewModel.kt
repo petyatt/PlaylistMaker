@@ -15,6 +15,7 @@ import java.util.Locale
 class AudioPlayerViewModel(private val playerInteractor: PlayerInteractor): ViewModel() {
 
     private var timerJob: Job? = null
+    private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
 
     private val _playerState = MutableLiveData<PlayerState>(PlayerState.Default())
     val playerState: LiveData<PlayerState> get() = _playerState
@@ -26,6 +27,7 @@ class AudioPlayerViewModel(private val playerInteractor: PlayerInteractor): View
             _playerState.postValue(PlayerState.Prepared())
         }
         playerInteractor.setOnCompletionListener {
+            timerJob?.cancel()
             _playerState.postValue(PlayerState.Prepared())
         }
     }
@@ -69,7 +71,7 @@ class AudioPlayerViewModel(private val playerInteractor: PlayerInteractor): View
     }
 
     private fun getCurrentPlayerPosition(): String {
-        return SimpleDateFormat("mm:ss", Locale.getDefault()).format(playerInteractor.getCurrentPosition()) ?: "00:00"
+        return dateFormat.format(playerInteractor.getCurrentPosition())
     }
 
     companion object {

@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.root
 
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager.LayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -14,6 +15,8 @@ class RootActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        window.setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         binding = ActivityRootBinding.inflate(layoutInflater)
         setContentView(binding.root)

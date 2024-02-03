@@ -84,27 +84,16 @@ class SearchTrackViewModel(private val searchInteractor: SearchInteractor): View
         }
     }
 
-    private fun processResult (foundTracks: List<Track>?, errorMessage: String?) {
-        val tracks = mutableListOf<Track>()
-        if (foundTracks != null) {
-            tracks.clear()
-            tracks.addAll(foundTracks)
-        }
+    private fun processResult(foundTracks: List<Track>?, errorMessage: String?) {
         when {
             errorMessage != null -> {
-                render(
-                    SearchState.Error
-                )
+                render(SearchState.Error)
             }
-            tracks.isEmpty() -> {
-                render(
-                    SearchState.Empty
-                )
+            foundTracks.isNullOrEmpty() -> {
+                render(SearchState.Empty)
             }
             else -> {
-                render(
-                    SearchState.Content(tracks)
-                )
+                render(SearchState.Content(foundTracks))
             }
         }
     }

@@ -1,5 +1,7 @@
 package com.practicum.playlistmaker.search.data.impl
 
+import androidx.annotation.StringRes
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.data.network.NetworkClient
 import com.practicum.playlistmaker.search.data.dto.TrackDto
 import com.practicum.playlistmaker.search.data.dto.TrackSearchResponse
@@ -16,11 +18,16 @@ class SearchRepositoryImpl(
     private val trackStorage: TrackStorage,
 ) : SearchRepository {
 
+    @StringRes
+    private val noInternetMessage: Int = R.string.error_not_internet
+    @StringRes
+    private val serverErrorMessage: Int = R.string.server_error_message
+
     override fun searchTracks(expression: String): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(TracksSearchRequest(expression))
         when (response.resultCode) {
             -1 -> {
-               emit(Resource.Error(message = "Проверьте подключение к интернету"))
+               emit(Resource.Error(message = noInternetMessage.toString()))
             }
             200 -> {
                 with(response as TrackSearchResponse) {
@@ -43,7 +50,7 @@ class SearchRepositoryImpl(
                 }
             }
             else -> {
-                emit(Resource.Error(message = "Ошибка сервера"))
+                emit(Resource.Error(message = serverErrorMessage.toString()))
             }
         }
     }

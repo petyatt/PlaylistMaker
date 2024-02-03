@@ -166,6 +166,8 @@ class SearchFragment: Fragment() {
     private fun showError() {
         binding.placeholderText.setText(R.string.error_not_internet)
         showPlaceholderView(R.drawable.no_internet)
+        binding.recyclerViewTrack.isVisible = false
+        binding.recyclerViewHistory.isVisible = false
         binding.progressBar.isVisible = false
         binding.tvHistoryView.isVisible = false
         binding.historyClearButton.isVisible = false
