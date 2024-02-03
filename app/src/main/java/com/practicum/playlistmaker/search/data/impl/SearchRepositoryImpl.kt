@@ -8,37 +8,42 @@ import com.practicum.playlistmaker.search.domain.models.TrackStorage
 import com.practicum.playlistmaker.search.domain.api.SearchRepository
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.util.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class SearchRepositoryImpl(
     private val networkClient: NetworkClient,
     private val trackStorage: TrackStorage,
 ) : SearchRepository {
 
-    override fun searchTracks(expression: String): Resource<List<Track>> {
+    override fun searchTracks(expression: String): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(TracksSearchRequest(expression))
-        return when (response.resultCode) {
+        when (response.resultCode) {
             -1 -> {
-                Resource.Error(message = "Проверьте подключение к интернету")
+               emit(Resource.Error(message = "Проверьте подключение к интернету"))
             }
             200 -> {
-                Resource.Success((response as TrackSearchResponse).results.map {
-                    Track(
-                        it.id,
-                        it.trackId,
-                        it.country,
-                        it.trackName,
-                        it.previewUrl,
-                        it.artistName,
-                        it.releaseDate,
-                        it.trackTimeMillis,
-                        it.artworkUrl100,
-                        it.collectionName,
-                        it.primaryGenreName
-                    )
-                })
+                with(response as TrackSearchResponse) {
+                    val data = results.map {
+                        Track(
+                            it.id,
+                            it.trackId,
+                            it.country,
+                            it.trackName,
+                            it.previewUrl,
+                            it.artistName,
+                            it.releaseDate,
+                            it.trackTimeMillis,
+                            it.artworkUrl100,
+                            it.collectionName,
+                            it.primaryGenreName
+                        )
+                    }
+                    emit(Resource.Success(data))
+                }
             }
             else -> {
-                Resource.Error(message = "Ошибка сервера")
+                emit(Resource.Error(message = "Ошибка сервера"))
             }
         }
     }
