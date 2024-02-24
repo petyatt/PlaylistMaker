@@ -15,41 +15,32 @@ import java.util.Locale
 
 class AudioPlayerActivity : AppCompatActivity() {
 
-    private var _binding: ActivityPlayerBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: ActivityPlayerBinding
     private val viewModel by viewModel<AudioPlayerViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 
-        _binding = ActivityPlayerBinding.inflate(layoutInflater)
+        binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val track = intent.getSerializableExtra("track") as Track
 
         viewModel.playerState.observe(this) { state ->
-            when (state) {
-                PlayerState.STATE_PLAYING -> {
+            when(state) {
+                is PlayerState.Playing -> {
                     binding.playButton.setImageResource(R.drawable.pause)
                 }
-
-                PlayerState.STATE_PREPARED, PlayerState.STATE_PAUSED -> {
+                is PlayerState.Prepared, is PlayerState.Paused -> {
                     binding.playButton.setImageResource(R.drawable.play)
                 }
-
-                else -> {
-                    PlayerState.STATE_DEFAULT
-                }
+                else -> { }
             }
+            binding.playbackProgress.text = state.progress
         }
 
         viewModel.preparePlayer(track.previewUrl)
-
-        viewModel.progressTimer.observe(this) { progress ->
-            binding.playbackProgress.text = progress
-            viewModel.progressRunnable.run()
-        }
 
         binding.playButton.setOnClickListener {
             viewModel.playbackControl()
@@ -77,25 +68,14 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (viewModel.playerState.value == PlayerState.STATE_PLAYING) {
-            viewModel.startPlayer()
-            binding.playButton.setImageResource(R.drawable.pause)
-        }
-    }
-
     override fun onPause() {
         super.onPause()
-        if (viewModel.playerState.value == PlayerState.STATE_PLAYING) {
-            viewModel.pausePlayer()
-            binding.playButton.setImageResource(R.drawable.play)
-        }
+        viewModel.pausePlayer()
+        binding.playButton.setImageResource(R.drawable.play)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         viewModel.releasePlayer()
-        _binding = null
     }
 }

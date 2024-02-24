@@ -21,6 +21,7 @@
     <string name="error_not_found">Ничего не нашлось</string>
     <string name="error_not_internet">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
     <string name="zaglushka">Заглушка</string>
+    <string name="server_error_message">Ошибка сервера</string>
     <string name="refresh_button">Обновить</string>
     <string name="you_were_looking_for">Вы искали</string>
     <string name="clear_history">Очистить историю</string>

@@ -1,5 +1,7 @@
 package com.practicum.playlistmaker.search.data.impl
 
+import androidx.annotation.StringRes
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.data.network.NetworkClient
 import com.practicum.playlistmaker.search.data.dto.TrackDto
 import com.practicum.playlistmaker.search.data.dto.TrackSearchResponse
@@ -8,37 +10,47 @@ import com.practicum.playlistmaker.search.domain.models.TrackStorage
 import com.practicum.playlistmaker.search.domain.api.SearchRepository
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.util.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class SearchRepositoryImpl(
     private val networkClient: NetworkClient,
     private val trackStorage: TrackStorage,
 ) : SearchRepository {
 
-    override fun searchTracks(expression: String): Resource<List<Track>> {
+    @StringRes
+    private val noInternetMessage: Int = R.string.error_not_internet
+    @StringRes
+    private val serverErrorMessage: Int = R.string.server_error_message
+
+    override fun searchTracks(expression: String): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(TracksSearchRequest(expression))
-        return when (response.resultCode) {
+        when (response.resultCode) {
             -1 -> {
-                Resource.Error(message = "Проверьте подключение к интернету")
+               emit(Resource.Error(message = noInternetMessage.toString()))
             }
             200 -> {
-                Resource.Success((response as TrackSearchResponse).results.map {
-                    Track(
-                        it.id,
-                        it.trackId,
-                        it.country,
-                        it.trackName,
-                        it.previewUrl,
-                        it.artistName,
-                        it.releaseDate,
-                        it.trackTimeMillis,
-                        it.artworkUrl100,
-                        it.collectionName,
-                        it.primaryGenreName
-                    )
-                })
+                with(response as TrackSearchResponse) {
+                    val data = results.map {
+                        Track(
+                            it.id,
+                            it.trackId,
+                            it.country,
+                            it.trackName,
+                            it.previewUrl,
+                            it.artistName,
+                            it.releaseDate,
+                            it.trackTimeMillis,
+                            it.artworkUrl100,
+                            it.collectionName,
+                            it.primaryGenreName
+                        )
+                    }
+                    emit(Resource.Success(data))
+                }
             }
             else -> {
-                Resource.Error(message = "Ошибка сервера")
+                emit(Resource.Error(message = serverErrorMessage.toString()))
             }
         }
     }
