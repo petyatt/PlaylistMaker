@@ -40,10 +40,18 @@ class AudioPlayerActivity : AppCompatActivity() {
             binding.playbackProgress.text = state.progress
         }
 
+        viewModel.observeFavourite(track).observe(this) { isFavorite ->
+            updateFavorite(isFavorite)
+        }
+
         viewModel.preparePlayer(track.previewUrl)
 
         binding.playButton.setOnClickListener {
             viewModel.playbackControl()
+        }
+
+        binding.favoritebutton.setOnClickListener {
+            viewModel.onFavoriteClicked(track)
         }
 
         binding.tvYear.text = track.releaseDate.substring(0, 4)
@@ -65,6 +73,14 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         binding.buttonBack.setOnClickListener {
             finish()
+        }
+    }
+
+    private fun updateFavorite(isFavorite: Boolean) {
+        if (isFavorite) {
+            binding.favoritebutton.setImageResource(R.drawable.favorite)
+        } else {
+            binding.favoritebutton.setImageResource(R.drawable.favorite_border_l)
         }
     }
 

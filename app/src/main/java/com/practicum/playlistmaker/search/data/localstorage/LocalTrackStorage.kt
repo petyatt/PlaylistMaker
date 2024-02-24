@@ -17,7 +17,6 @@ class LocalTrackStorage(
         const val SAVE_HISTORY = "save_history"
         const val KEY_SEARCH_HISTORY = "key_search_history"
         const val LIMITATIONS_HISTORY_TRACKS = 10
-        const val ID = "id"
         const val TRACK_ID = "trackId"
         const val COUNTRY = "country"
         const val TRACK_NAME = "track_Name"
@@ -33,7 +32,6 @@ class LocalTrackStorage(
     override fun save(trackDto: TrackDto) {
         sharedPreferences.edit().apply {
             putString(PREVIEW_URL, trackDto.previewUrl)
-            putLong(ID, trackDto.id)
             putLong(TRACK_ID, trackDto.trackId)
             putString(COUNTRY, trackDto.country)
             putString(TRACK_NAME, trackDto.trackName)

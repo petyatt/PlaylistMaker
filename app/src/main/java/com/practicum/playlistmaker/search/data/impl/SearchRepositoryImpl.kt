@@ -33,7 +33,6 @@ class SearchRepositoryImpl(
                 with(response as TrackSearchResponse) {
                     val data = results.map {
                         Track(
-                            it.id,
                             it.trackId,
                             it.country,
                             it.trackName,
@@ -43,7 +42,9 @@ class SearchRepositoryImpl(
                             it.trackTimeMillis,
                             it.artworkUrl100,
                             it.collectionName,
-                            it.primaryGenreName
+                            it.primaryGenreName,
+                            it.isFavorite,
+                            it.addedAt
                         )
                     }
                     emit(Resource.Success(data))
@@ -57,7 +58,6 @@ class SearchRepositoryImpl(
 
     override fun saveTrack(track: Track) {
         val trackDto = TrackDto(
-            track.id,
             track.trackId,
             track.country,
             track.trackName,
@@ -67,7 +67,9 @@ class SearchRepositoryImpl(
             track.trackTimeMillis,
             track.artworkUrl100,
             track.collectionName,
-            track.primaryGenreName
+            track.primaryGenreName,
+            track.isFavorite,
+            System.currentTimeMillis()
         )
         trackStorage.save(trackDto)
     }
@@ -76,7 +78,6 @@ class SearchRepositoryImpl(
         val trackDto = trackStorage.get()
         val track = trackDto.map {
             Track(
-                it.id,
                 it.trackId,
                 it.country,
                 it.trackName,
@@ -86,7 +87,9 @@ class SearchRepositoryImpl(
                 it.trackTimeMillis,
                 it.getCoverArtwork(),
                 it.collectionName,
-                it.primaryGenreName
+                it.primaryGenreName,
+                it.isFavorite,
+                it.addedAt
             )
         }
         return ArrayList(track)
