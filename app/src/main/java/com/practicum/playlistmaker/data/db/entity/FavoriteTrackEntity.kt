@@ -16,6 +16,6 @@ data class FavoriteTrackEntity(
     val artworkUrl100: String,
     val collectionName: String,
     val primaryGenreName: String,
-    var isFavorite: Boolean,
+    val isFavorite: Boolean,
     val addedAt: Long
 )

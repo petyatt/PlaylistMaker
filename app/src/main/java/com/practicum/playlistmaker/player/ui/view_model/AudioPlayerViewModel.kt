@@ -72,26 +72,21 @@ class AudioPlayerViewModel(
 
     fun onFavoriteClicked(track: Track) {
         viewModelScope.launch {
-            if(track.isFavorite) {
+            if (track.isFavorite) {
                 track.trackId.let { favoriteTrackInteractor.deleteFavoriteTrack(track) }
-            }
-            else {
+            } else {
                 track.trackId.let { favoriteTrackInteractor.insertFavoriteTrack(track) }
             }
+            _isFavorite.postValue(track.isFavorite)
         }
     }
 
-    fun observeFavourite(track: Track): LiveData<Boolean> {
+    fun observeFavourite(track: Track) {
         favouriteTrackJob = viewModelScope.launch {
-            while (true) {
-                track.trackId.let { trackId ->
-                    favoriteTrackInteractor.getFavoriteTrackId(trackId).collect { item ->
-                        _isFavorite.postValue(item)
-                    }
-                }
+            favoriteTrackInteractor.getFavoriteTrackId(track.trackId).collect { item ->
+                _isFavorite.value = item
             }
         }
-        return _isFavorite
     }
 
     private fun startTimer() {

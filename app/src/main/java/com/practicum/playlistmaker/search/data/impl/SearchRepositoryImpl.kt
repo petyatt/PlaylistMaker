@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.search.data.impl
 
 import androidx.annotation.StringRes
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.media.domain.db.FavoriteTrackRepository
 import com.practicum.playlistmaker.search.data.network.NetworkClient
 import com.practicum.playlistmaker.search.data.dto.TrackDto
 import com.practicum.playlistmaker.search.data.dto.TrackSearchResponse
@@ -11,11 +12,13 @@ import com.practicum.playlistmaker.search.domain.api.SearchRepository
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.util.Resource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 
 class SearchRepositoryImpl(
     private val networkClient: NetworkClient,
     private val trackStorage: TrackStorage,
+    private val favoriteTrackRepository: FavoriteTrackRepository
 ) : SearchRepository {
 
     @StringRes
@@ -27,24 +30,25 @@ class SearchRepositoryImpl(
         val response = networkClient.doRequest(TracksSearchRequest(expression))
         when (response.resultCode) {
             -1 -> {
-               emit(Resource.Error(message = noInternetMessage.toString()))
+                emit(Resource.Error(message = noInternetMessage.toString()))
             }
             200 -> {
                 with(response as TrackSearchResponse) {
-                    val data = results.map {
+                    val data = results.map { trackDto ->
+                        val isFavorite = favoriteTrackRepository.getFavoriteTrackId(trackDto.trackId).first()
                         Track(
-                            it.trackId,
-                            it.country,
-                            it.trackName,
-                            it.previewUrl,
-                            it.artistName,
-                            it.releaseDate,
-                            it.trackTimeMillis,
-                            it.artworkUrl100,
-                            it.collectionName,
-                            it.primaryGenreName,
-                            it.isFavorite,
-                            it.addedAt
+                            trackDto.trackId,
+                            trackDto.country,
+                            trackDto.trackName,
+                            trackDto.previewUrl,
+                            trackDto.artistName,
+                            trackDto.releaseDate,
+                            trackDto.trackTimeMillis,
+                            trackDto.artworkUrl100,
+                            trackDto.collectionName,
+                            trackDto.primaryGenreName,
+                            isFavorite,
+                            trackDto.addedAt
                         )
                     }
                     emit(Resource.Success(data))

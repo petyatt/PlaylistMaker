@@ -6,20 +6,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.media.domain.db.FavoriteTrackInteractor
 import com.practicum.playlistmaker.media.domain.model.MediaTrackState
+import com.practicum.playlistmaker.search.domain.api.SearchInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.view_model.SearchTrackViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class FavoritesTracksViewModel(
     private val favoriteTrackInteractor: FavoriteTrackInteractor,
-    private val searchTrackViewModel: SearchTrackViewModel
+    private val searchInteractor: SearchInteractor
 ): ViewModel() {
 
     private val _stateLiveData = MutableLiveData<MediaTrackState>()
     fun observeState(): LiveData<MediaTrackState> = _stateLiveData
 
     private var isClickAllowed = true
+
+    init {
+        getFavoriteTrack()
+    }
 
     fun getFavoriteTrack() {
         viewModelScope.launch {
@@ -30,7 +34,7 @@ class FavoritesTracksViewModel(
     }
 
     fun saveTrack(track: Track) {
-        searchTrackViewModel.saveTrack(track)
+        searchInteractor.saveTrack(track)
     }
 
     fun clickDebounce(): Boolean {

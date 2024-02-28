@@ -24,7 +24,7 @@ val interactorModule = module {
         SettingsInteractorImpl(get())
     }
 
-    single<FavoriteTrackInteractor> {
+    factory<FavoriteTrackInteractor> {
         FavoriteTrackInteractorImpl(get())
     }
 }

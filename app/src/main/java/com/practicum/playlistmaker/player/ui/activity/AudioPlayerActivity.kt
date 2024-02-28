@@ -40,9 +40,15 @@ class AudioPlayerActivity : AppCompatActivity() {
             binding.playbackProgress.text = state.progress
         }
 
-        viewModel.observeFavourite(track).observe(this) { isFavorite ->
-            updateFavorite(isFavorite)
+        viewModel.isFavorite.observe(this) {isFavorite ->
+            if (isFavorite) {
+                binding.favoritebutton.setImageResource(R.drawable.favorite)
+            } else {
+                binding.favoritebutton.setImageResource(R.drawable.favorite_border_l)
+            }
         }
+
+        viewModel.observeFavourite(track)
 
         viewModel.preparePlayer(track.previewUrl)
 
@@ -73,14 +79,6 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         binding.buttonBack.setOnClickListener {
             finish()
-        }
-    }
-
-    private fun updateFavorite(isFavorite: Boolean) {
-        if (isFavorite) {
-            binding.favoritebutton.setImageResource(R.drawable.favorite)
-        } else {
-            binding.favoritebutton.setImageResource(R.drawable.favorite_border_l)
         }
     }
 

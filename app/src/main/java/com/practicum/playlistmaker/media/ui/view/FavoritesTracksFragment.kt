@@ -32,7 +32,7 @@ class FavoritesTracksFragment: Fragment() {
         viewModel.saveTrack(track)
         viewModel.getFavoriteTrack()
         val intent = Intent(requireContext(), AudioPlayerActivity::class.java)
-        intent.putExtra("track", track)
+        intent.putExtra(TRACK, track)
         startActivity(intent)
     }
 
@@ -48,8 +48,8 @@ class FavoritesTracksFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        _binding?.recyclerViewFavoriteTrack?.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        _binding?.recyclerViewFavoriteTrack?.adapter = adapter
+        binding.recyclerViewFavoriteTrack.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.recyclerViewFavoriteTrack.adapter = adapter
 
         viewModel.observeState().observe(viewLifecycleOwner) {state ->
             when(state) {
@@ -61,23 +61,19 @@ class FavoritesTracksFragment: Fragment() {
     }
 
     private fun showEmpty() {
-        _binding?.recyclerViewFavoriteTrack?.isVisible = false
-        _binding?.imageViewPlaceholderView?.isVisible = true
-        _binding?.placeholderViewMediaNotFound?.isVisible = true
+        binding.recyclerViewFavoriteTrack.isVisible = false
+        binding.imageViewPlaceholderView.isVisible = true
+        binding.placeholderViewMediaNotFound.isVisible = true
     }
 
     private fun showContent(tracks: List<Track>) {
-        _binding?.recyclerViewFavoriteTrack?.isVisible = true
-        _binding?.imageViewPlaceholderView?.isVisible = false
-        _binding?.placeholderViewMediaNotFound?.isVisible = false
+        binding.recyclerViewFavoriteTrack.isVisible = true
+        binding.imageViewPlaceholderView.isVisible = false
+        binding.placeholderViewMediaNotFound.isVisible = false
 
         adapter.tracks.clear()
         adapter.tracks.addAll(tracks)
-        adapter?.notifyDataSetChanged()
-    }
-
-    companion object{
-        fun newInstance() = FavoritesTracksFragment()
+        adapter.notifyDataSetChanged()
     }
 
     override fun onDestroyView() {
@@ -88,5 +84,10 @@ class FavoritesTracksFragment: Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.getFavoriteTrack()
+    }
+
+    companion object{
+        fun newInstance() = FavoritesTracksFragment()
+        const val TRACK = "track"
     }
 }

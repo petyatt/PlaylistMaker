@@ -5,7 +5,7 @@ import com.practicum.playlistmaker.search.domain.models.Track
 
 class FavoriteTrackDbConverter {
 
-    fun map(track: Track): FavoriteTrackEntity {
+    fun map(track: Track, addedAt: Long): FavoriteTrackEntity {
         return FavoriteTrackEntity(
             track.trackId,
             track.country,
@@ -18,7 +18,7 @@ class FavoriteTrackDbConverter {
             track.collectionName,
             track.primaryGenreName,
             track.isFavorite,
-            System.currentTimeMillis()
+            addedAt
         )
     }
 
