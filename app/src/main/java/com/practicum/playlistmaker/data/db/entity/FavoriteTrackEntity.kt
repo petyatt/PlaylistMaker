@@ -1,6 +1,11 @@
-package com.practicum.playlistmaker.search.data.dto
+package com.practicum.playlistmaker.data.db.entity
 
-data class TrackDto (
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "favorite_track_table")
+data class FavoriteTrackEntity(
+    @PrimaryKey
     val trackId: Long,
     val country: String,
     val trackName: String,
@@ -13,7 +18,4 @@ data class TrackDto (
     val primaryGenreName: String,
     val isFavorite: Boolean,
     val addedAt: Long
-
-) {
-    fun getCoverArtwork() = artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")
-}
+)

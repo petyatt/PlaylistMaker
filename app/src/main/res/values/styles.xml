@@ -90,7 +90,12 @@
 
     <style name="pattern_track">
         <item name="android:backgroundTint">@color/white</item>
-        <item name="android:textColorHint">@color/textColorHint</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="pattern_track_tint">
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/textColorHint</item>
     </style>
 
     <style name="buttonClear">

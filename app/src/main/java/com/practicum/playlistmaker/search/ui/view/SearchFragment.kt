@@ -155,6 +155,7 @@ class SearchFragment: Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.refreshSearchResults()
+        viewModel.loadSearchHistory()
     }
 
     private fun showPlaceholderView(placeholderImageRes: Int) {

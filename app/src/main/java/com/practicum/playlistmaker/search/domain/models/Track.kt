@@ -3,7 +3,6 @@ package com.practicum.playlistmaker.search.domain.models
 import java.io.Serializable
 
 data class Track(
-    val id: Long,
     val trackId: Long,
     val country: String,
     val trackName: String,
@@ -13,5 +12,7 @@ data class Track(
     val trackTimeMillis: Long,
     val artworkUrl100: String,
     val collectionName: String,
-    val primaryGenreName: String
+    val primaryGenreName: String,
+    var isFavorite: Boolean,
+    val addedAt: Long
 ): Serializable

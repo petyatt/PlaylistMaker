@@ -4,18 +4,27 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.practicum.playlistmaker.media.domain.db.FavoriteTrackInteractor
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.domain.models.PlayerState
+import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class AudioPlayerViewModel(private val playerInteractor: PlayerInteractor): ViewModel() {
+class AudioPlayerViewModel(
+    private val playerInteractor: PlayerInteractor,
+    private val favoriteTrackInteractor: FavoriteTrackInteractor
+): ViewModel() {
 
     private var timerJob: Job? = null
+    private var favouriteTrackJob: Job? = null
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
+
+    private val _isFavorite = MutableLiveData<Boolean>()
+    val isFavorite: LiveData<Boolean> = _isFavorite
 
     private val _playerState = MutableLiveData<PlayerState>(PlayerState.Default())
     val playerState: LiveData<PlayerState> get() = _playerState
@@ -59,6 +68,25 @@ class AudioPlayerViewModel(private val playerInteractor: PlayerInteractor): View
     fun releasePlayer() {
         playerInteractor.releasePlayer()
         _playerState.value = PlayerState.Default()
+    }
+
+    fun onFavoriteClicked(track: Track) {
+        viewModelScope.launch {
+            if (track.isFavorite) {
+                track.trackId.let { favoriteTrackInteractor.deleteFavoriteTrack(track) }
+            } else {
+                track.trackId.let { favoriteTrackInteractor.insertFavoriteTrack(track) }
+            }
+            _isFavorite.postValue(track.isFavorite)
+        }
+    }
+
+    fun observeFavourite(track: Track) {
+        favouriteTrackJob = viewModelScope.launch {
+            favoriteTrackInteractor.getFavoriteTrackId(track.trackId).collect { item ->
+                _isFavorite.value = item
+            }
+        }
     }
 
     private fun startTimer() {

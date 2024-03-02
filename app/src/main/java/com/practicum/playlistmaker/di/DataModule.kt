@@ -2,7 +2,9 @@ package com.practicum.playlistmaker.di
 
 import android.content.Context.MODE_PRIVATE
 import android.media.MediaPlayer
+import androidx.room.Room
 import com.google.gson.Gson
+import com.practicum.playlistmaker.data.db.AppDatabase
 import com.practicum.playlistmaker.player.data.dto.PlayerData
 import com.practicum.playlistmaker.player.data.dto.PlayerDataSource
 import com.practicum.playlistmaker.search.data.localstorage.LocalTrackStorage
@@ -19,6 +21,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 val dataModule = module {
+
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+            .build()
+    }
 
     single<ItunesApiService> {
         Retrofit.Builder()

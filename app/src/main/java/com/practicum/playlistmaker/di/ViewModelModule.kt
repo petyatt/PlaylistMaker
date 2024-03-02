@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.di
 
+import com.practicum.playlistmaker.media.domain.db.FavoriteTrackInteractor
 import com.practicum.playlistmaker.media.ui.view_model.FavoritesTracksViewModel
 import com.practicum.playlistmaker.media.ui.view_model.PlaylistViewModel
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
@@ -11,7 +12,7 @@ import org.koin.dsl.module
 
 val viewModelModule = module {
     viewModel {
-        AudioPlayerViewModel(get<PlayerInteractor>())
+        AudioPlayerViewModel(get<PlayerInteractor>(), get<FavoriteTrackInteractor>())
     }
 
     viewModel {
@@ -19,7 +20,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        FavoritesTracksViewModel()
+        FavoritesTracksViewModel(get(), get())
     }
 
     viewModel {

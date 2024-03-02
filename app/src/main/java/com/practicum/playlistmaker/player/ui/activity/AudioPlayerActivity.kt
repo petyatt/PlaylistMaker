@@ -40,10 +40,24 @@ class AudioPlayerActivity : AppCompatActivity() {
             binding.playbackProgress.text = state.progress
         }
 
+        viewModel.isFavorite.observe(this) {isFavorite ->
+            if (isFavorite) {
+                binding.favoritebutton.setImageResource(R.drawable.favorite)
+            } else {
+                binding.favoritebutton.setImageResource(R.drawable.favorite_border_l)
+            }
+        }
+
+        viewModel.observeFavourite(track)
+
         viewModel.preparePlayer(track.previewUrl)
 
         binding.playButton.setOnClickListener {
             viewModel.playbackControl()
+        }
+
+        binding.favoritebutton.setOnClickListener {
+            viewModel.onFavoriteClicked(track)
         }
 
         binding.tvYear.text = track.releaseDate.substring(0, 4)
