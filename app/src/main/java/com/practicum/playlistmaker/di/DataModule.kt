@@ -5,6 +5,8 @@ import android.media.MediaPlayer
 import androidx.room.Room
 import com.google.gson.Gson
 import com.practicum.playlistmaker.data.db.AppDatabase
+import com.practicum.playlistmaker.data.db.PlaylistDatabase
+import com.practicum.playlistmaker.data.db.TracksPlaylistsDatabase
 import com.practicum.playlistmaker.player.data.dto.PlayerData
 import com.practicum.playlistmaker.player.data.dto.PlayerDataSource
 import com.practicum.playlistmaker.search.data.localstorage.LocalTrackStorage
@@ -24,6 +26,16 @@ val dataModule = module {
 
     single {
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+            .build()
+    }
+
+    single {
+        Room.databaseBuilder(androidContext(), PlaylistDatabase::class.java, "playlist.db")
+            .build()
+    }
+
+    single {
+        Room.databaseBuilder(androidContext(), TracksPlaylistsDatabase::class.java, "tracksPlaylists.db")
             .build()
     }
 

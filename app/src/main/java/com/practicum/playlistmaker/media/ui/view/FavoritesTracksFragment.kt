@@ -8,10 +8,11 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentFavoritesTracksBinding
 import com.practicum.playlistmaker.media.domain.model.MediaTrackState
 import com.practicum.playlistmaker.media.ui.view_model.FavoritesTracksViewModel
-import com.practicum.playlistmaker.player.ui.activity.AudioPlayerActivity
+import com.practicum.playlistmaker.player.ui.view.AudioPlayerFragment
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.view.TrackAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -24,16 +25,20 @@ class FavoritesTracksFragment: Fragment() {
 
     private val adapter = TrackAdapter { track ->
         if (viewModel.clickDebounce()) {
-            saveTrackAndStartActivity(track)
+            saveTrackAndStartFragment(track)
         }
     }
 
-    private fun saveTrackAndStartActivity(track: Track) {
+    private fun saveTrackAndStartFragment(track: Track) {
         viewModel.saveTrack(track)
-        viewModel.getFavoriteTrack()
-        val intent = Intent(requireContext(), AudioPlayerActivity::class.java)
-        intent.putExtra(TRACK, track)
-        startActivity(intent)
+        val fragment = AudioPlayerFragment()
+        val args = Bundle()
+        args.putSerializable("track", track)
+        fragment.arguments = args
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.container_view, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     override fun onCreateView(

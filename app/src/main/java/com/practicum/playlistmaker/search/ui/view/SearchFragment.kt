@@ -1,7 +1,6 @@
 package com.practicum.playlistmaker.search.ui.view
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,7 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
-import com.practicum.playlistmaker.player.ui.activity.AudioPlayerActivity
+import com.practicum.playlistmaker.player.ui.view.AudioPlayerFragment
 import com.practicum.playlistmaker.search.domain.models.SearchState
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.view_model.SearchTrackViewModel
@@ -29,21 +28,26 @@ class SearchFragment: Fragment() {
 
     private val trackListAdapter = TrackAdapter { track ->
         if (viewModel.clickDebounce()) {
-            saveTrackAndStartActivity(track)
+            saveTrackAndStartFragment(track)
         }
     }
 
     private val trackListHistoryAdapter = TrackAdapter { track ->
         if (viewModel.clickDebounce()) {
-            saveTrackAndStartActivity(track)
+            saveTrackAndStartFragment(track)
         }
     }
 
-    private fun saveTrackAndStartActivity(track: Track) {
+    private fun saveTrackAndStartFragment(track: Track) {
         viewModel.saveTrack(track)
-        val intent = Intent(requireContext(), AudioPlayerActivity::class.java)
-        intent.putExtra("track", track)
-        startActivity(intent)
+        val fragment = AudioPlayerFragment()
+        val args = Bundle()
+        args.putSerializable("track", track)
+        fragment.arguments = args
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.container_view, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     override fun onCreateView(

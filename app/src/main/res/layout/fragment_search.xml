@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="?attr/colorPrimaryVariant"
     android:orientation="vertical"
-    tools:context=".root.RootActivity">
+    tools:context=".search.ui.view.SearchFragment">
 
     <TextView
         android:id="@+id/text_Search"

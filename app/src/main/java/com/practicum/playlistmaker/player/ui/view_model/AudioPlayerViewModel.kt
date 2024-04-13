@@ -4,7 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.practicum.playlistmaker.media.domain.db.FavoriteTrackInteractor
+import com.practicum.playlistmaker.media.domain.db.PlaylistInteractor
+import com.practicum.playlistmaker.media.domain.model.Playlist
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.domain.models.PlayerState
 import com.practicum.playlistmaker.search.domain.models.Track
@@ -16,6 +19,7 @@ import java.util.Locale
 
 class AudioPlayerViewModel(
     private val playerInteractor: PlayerInteractor,
+    private val playlistInteractor: PlaylistInteractor,
     private val favoriteTrackInteractor: FavoriteTrackInteractor
 ): ViewModel() {
 
@@ -23,11 +27,20 @@ class AudioPlayerViewModel(
     private var favouriteTrackJob: Job? = null
     private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
 
+    private val _bottomSheetState = MutableLiveData<Int>()
+    val bottomSheetState: LiveData<Int> get() = _bottomSheetState
+
+    private val _message = MutableLiveData<String>()
+    val message: LiveData<String> get() = _message
+
     private val _isFavorite = MutableLiveData<Boolean>()
     val isFavorite: LiveData<Boolean> = _isFavorite
 
     private val _playerState = MutableLiveData<PlayerState>(PlayerState.Default())
     val playerState: LiveData<PlayerState> get() = _playerState
+
+    private val _playlistsLiveData = MutableLiveData<List<Playlist>>()
+    val playlistsLiveData: LiveData<List<Playlist>> get() = _playlistsLiveData
 
     fun preparePlayer(trackUrl: String) {
         playerInteractor.setDataSource(trackUrl)
@@ -72,10 +85,13 @@ class AudioPlayerViewModel(
 
     fun onFavoriteClicked(track: Track) {
         viewModelScope.launch {
-            if (track.isFavorite) {
-                track.trackId.let { favoriteTrackInteractor.deleteFavoriteTrack(track) }
+            val isCurrentlyFavorite = track.isFavorite
+            if (isCurrentlyFavorite) {
+                favoriteTrackInteractor.deleteFavoriteTrack(track)
+                track.isFavorite = false
             } else {
-                track.trackId.let { favoriteTrackInteractor.insertFavoriteTrack(track) }
+                favoriteTrackInteractor.insertFavoriteTrack(track)
+                track.isFavorite = true
             }
             _isFavorite.postValue(track.isFavorite)
         }
@@ -83,8 +99,8 @@ class AudioPlayerViewModel(
 
     fun observeFavourite(track: Track) {
         favouriteTrackJob = viewModelScope.launch {
-            favoriteTrackInteractor.getFavoriteTrackId(track.trackId).collect { item ->
-                _isFavorite.value = item
+            favoriteTrackInteractor.getFavoriteTrackId(track.trackId).collect { isFavorite ->
+                _isFavorite.postValue(isFavorite)
             }
         }
     }
@@ -93,13 +109,50 @@ class AudioPlayerViewModel(
         timerJob = viewModelScope.launch {
             while (playerInteractor.isPlaying()) {
                 delay(DELAY_MILLIS)
-                _playerState.postValue(PlayerState.Playing(getCurrentPlayerPosition()))
+                _playerState.value?.let { currentState ->
+                    val currentPosition = getCurrentPlayerPosition()
+                    if (currentState.progress != currentPosition) {
+                        _playerState.postValue(PlayerState.Playing(currentPosition))
+                    }
+                }
             }
         }
     }
 
     private fun getCurrentPlayerPosition(): String {
         return dateFormat.format(playerInteractor.getCurrentPosition())
+    }
+
+    fun getAllPlaylists() {
+        viewModelScope.launch {
+            playlistInteractor.getAllPlaylist().collect { playlistEntities ->
+                val playlists = playlistEntities.map { playlistEntity ->
+                    Playlist(
+                        playlistEntity.playlistId,
+                        playlistEntity.title,
+                        playlistEntity.description,
+                        playlistEntity.imagePath,
+                        playlistEntity.trackList,
+                        playlistEntity.trackCount
+                    )
+                }
+                _playlistsLiveData.value = playlists
+            }
+        }
+    }
+
+    fun addTrackToPlaylist(track: Track, playlist: Playlist) {
+        viewModelScope.launch {
+            if (playlist.trackList.contains(track.trackId)) {
+                _message.postValue("Трек уже добавлен в плейлист ${playlist.title}")
+            } else {
+                val newTrackList = playlist.trackList + track.trackId
+                playlist.trackList = newTrackList
+                playlistInteractor.addTrackInPlaylist(track, playlist)
+                _message.postValue("Добавлено в плейлист ${playlist.title}")
+                _bottomSheetState.postValue(BottomSheetBehavior.STATE_HIDDEN)
+            }
+        }
     }
 
     companion object {
