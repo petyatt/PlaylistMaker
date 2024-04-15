@@ -93,19 +93,24 @@ class NewPlaylistFragment: Fragment() {
         })
 
         binding.imageButtonCreate.setOnClickListener {
-            val title = binding.editTextTitle.text.toString()
-            val description = binding.editTextDescription.text.toString()
-            val imagePath = selectedImageUri?.let { uri -> saveImageToPrivateStorage(uri) } ?: ""
-            val playlist = Playlist(
-                title = title,
-                description = description,
-                imagePath = imagePath,
-                trackCount = 0,
-                trackList = emptyList()
-            )
-            showSuccessMessage(playlist.title)
-            viewModel.createPlaylist(playlist)
-            findNavController().popBackStack()
+            binding.imageButtonCreate.setOnClickListener {
+                val title = binding.editTextTitle.text.toString().trim()
+                if (title.isNotEmpty()) {
+                    val description = binding.editTextDescription.text.toString().trim()
+                    val imagePath =
+                        selectedImageUri?.let { uri -> saveImageToPrivateStorage(uri) } ?: ""
+                    val playlist = Playlist(
+                        title = title,
+                        description = description,
+                        imagePath = imagePath,
+                        trackCount = 0,
+                        trackList = emptyList()
+                    )
+                    viewModel.createPlaylist(playlist)
+                    showSuccessMessage(playlist.title)
+                    findNavController().popBackStack()
+                }
+            }
         }
     }
 

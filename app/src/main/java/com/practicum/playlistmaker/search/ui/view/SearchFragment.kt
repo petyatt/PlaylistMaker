@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
@@ -40,14 +41,10 @@ class SearchFragment: Fragment() {
 
     private fun saveTrackAndStartFragment(track: Track) {
         viewModel.saveTrack(track)
-        val fragment = AudioPlayerFragment()
         val args = Bundle()
         args.putSerializable("track", track)
-        fragment.arguments = args
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.container_view, fragment)
-            .addToBackStack(null)
-            .commit()
+        findNavController().navigate(R.id.action_searchFragment_to_audioPlayerFragment, args)
+
     }
 
     override fun onCreateView(

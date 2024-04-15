@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.player.ui.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,7 +48,7 @@ class AudioPlayerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val track = arguments?.getSerializable("track") as Track
+        val track = arguments?.getSerializable("track") as? Track
 
         bottomNavigation = requireActivity().findViewById(R.id.bottom_Navigation)
         bottomNavigation.visibility = View.GONE
@@ -91,9 +92,9 @@ class AudioPlayerFragment : Fragment() {
             }
         })
 
-        binding.buttonBack.setOnClickListener {
-            findNavController().popBackStack()
-        }
+            binding.buttonBack.setOnClickListener {
+                findNavController().popBackStack()
+            }
 
         binding.btnNewPlaylist.setOnClickListener {
             findNavController().navigate(R.id.action_audioPlayerFragment_to_newPlaylistFragment)
@@ -129,29 +130,29 @@ class AudioPlayerFragment : Fragment() {
             }
         }
 
-        viewModel.observeFavourite(track)
+        track?.let { viewModel.observeFavourite(it) }
 
-        viewModel.preparePlayer(track.previewUrl)
+        track?.let { viewModel.preparePlayer(it.previewUrl) }
 
         binding.playButton.setOnClickListener {
             viewModel.playbackControl()
         }
 
         binding.favoritebutton.setOnClickListener {
-            viewModel.onFavoriteClicked(track)
+            track?.let { it1 -> viewModel.onFavoriteClicked(it1) }
         }
 
-        binding.tvYear.text = track.releaseDate.substring(0, 4)
-        binding.tvCountry.text = track.country
+        binding.tvYear.text = track?.releaseDate?.substring(0, 4)
+        binding.tvCountry.text = track?.country
         binding.tvDuration.text =
-            SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
-        binding.tvGenre.text = track.primaryGenreName
-        binding.tvAlbum.text = track.collectionName
-        binding.textView14.text = track.trackName
-        binding.textView15.text = track.artistName
+            SimpleDateFormat("mm:ss", Locale.getDefault()).format(track?.trackTimeMillis)
+        binding.tvGenre.text = track?.primaryGenreName
+        binding.tvAlbum.text = track?.collectionName
+        binding.textView14.text = track?.trackName
+        binding.textView15.text = track?.artistName
 
         Glide.with(this)
-            .load(track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"))
+            .load(track?.artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg"))
             .error(R.drawable.placeholder)
             .placeholder(R.drawable.placeholder)
             .fitCenter()

@@ -10,9 +10,9 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/fragment_new_playlist"
-    android:background="?attr/colorPrimaryVariant"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/colorPrimaryVariant"
     tools:context=".media.ui.view.NewPlaylistFragment">
 
     <ImageButton
@@ -40,8 +40,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/textInputLayout"
         android:id="@+id/textInputLayout"
+        android:layout_width="328dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="@dimen/paddingStart_16dp"
+        android:layout_marginEnd="@dimen/layout_marginRight_16dp"
         android:layout_marginTop="32dp"
         android:hint="Название*"
         app:layout_constraintEnd_toEndOf="parent"
@@ -50,13 +53,16 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView_rectangel">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextTitle"
-            style="@style/textInputEditText" />
+            style="@style/textInputEditText"
+            android:id="@+id/editTextTitle"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/textInputLayout"
         android:id="@+id/descriptionInputLayout"
+        android:layout_width="328dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="@dimen/paddingStart_16dp"
+        android:layout_marginEnd="@dimen/layout_marginRight_16dp"
         android:layout_marginTop="16dp"
         android:hint="Описание"
         app:layout_constraintEnd_toEndOf="parent"
@@ -74,7 +80,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="554dp" />
+        app:layout_constraintGuide_begin="672dp" />
 
     <ImageView
         android:id="@+id/imageButton_Create"
