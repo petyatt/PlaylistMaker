@@ -5,6 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.media.domain.db.PlaylistInteractor
@@ -18,6 +20,12 @@ class NewPlaylistViewModel(
     private val playlistInteractor: PlaylistInteractor
 ): ViewModel() {
 
+    private val _selectedImageUri = MutableLiveData<Uri?>()
+    val selectedImageUri: LiveData<Uri?> = _selectedImageUri
+
+    private val _isImageSelected = MutableLiveData<Boolean>()
+    val isImageSelected: LiveData<Boolean> = _isImageSelected
+
     private val filePath by lazy {
         File(appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "myalbum")
     }
@@ -26,6 +34,11 @@ class NewPlaylistViewModel(
         viewModelScope.launch {
                 playlistInteractor.createNewPlaylist(playlist)
         }
+    }
+
+    fun setImageUri(uri: Uri?) {
+        _selectedImageUri.value = uri
+        _isImageSelected.value = uri != null
     }
 
     fun saveImageToPrivateStorage(uri: Uri): String {

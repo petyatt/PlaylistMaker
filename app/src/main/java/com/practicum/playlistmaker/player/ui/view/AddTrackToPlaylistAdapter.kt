@@ -45,7 +45,8 @@ class AddTrackToPlaylistAdapter(
         fun bind(playlist: Playlist) {
 
             playlistTitle.text = playlist.title
-            playlistCountTrack.text = playlist.trackCount.toString()
+            val trackWord = getTracksWord(playlist.trackCount)
+            playlistCountTrack.text = itemView.context.getString(R.string.tracks_count, playlist.trackCount, trackWord)
 
             Glide.with(itemView)
                 .load(playlist.imagePath)
@@ -56,6 +57,14 @@ class AddTrackToPlaylistAdapter(
                 .into(playlistAlbum)
 
             itemView.setOnClickListener { clickListener.onPlaylistClick(playlist, tracks) }
+        }
+    }
+
+    fun getTracksWord(count: Int): String {
+        return when {
+            count % 10 == 1 && count % 100 != 11 -> "трек"
+            count % 10 in 2..4 && count % 100 !in 12..14 -> "трека"
+            else -> "треков"
         }
     }
 

@@ -50,4 +50,5 @@
     <string name="track_already_added">Трек уже добавлен в плейлист</string>
     <string name="track_added">Добавлено в плейлист</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tracks_count">%1$d %2$s</string>
 </resources>

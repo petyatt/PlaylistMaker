@@ -155,6 +155,11 @@ class AudioPlayerViewModel(
         }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        playerInteractor.releasePlayer()
+        }
+
     companion object {
         const val DELAY_MILLIS = 300L
     }

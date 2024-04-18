@@ -1,7 +1,6 @@
 package com.practicum.playlistmaker.media.ui.view
 
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -27,7 +26,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NewPlaylistFragment: Fragment() {
 
-    private var selectedImageUri: Uri? = null
     private var isImageSelected = false
     private val viewModel by viewModel<NewPlaylistViewModel>()
     private var _binding: FragmentNewPlaylistBinding? = null
@@ -45,6 +43,20 @@ class NewPlaylistFragment: Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        viewModel.selectedImageUri.observe(viewLifecycleOwner) { uri ->
+            uri?.let {
+                Glide.with(this).load(it).into(binding.imageViewRectangel)
+            }
+        }
+
+        viewModel.isImageSelected.observe(viewLifecycleOwner) { isSelected ->
+            isImageSelected = isSelected
+            if (!isSelected) {
+                Glide.with(this).load(R.drawable.placeholder).into(binding.imageViewRectangel)
+            }
+        }
+
 
         binding.buttonBack.setOnClickListener {
             showDialog()
@@ -93,23 +105,21 @@ class NewPlaylistFragment: Fragment() {
         })
 
         binding.imageButtonCreate.setOnClickListener {
-            binding.imageButtonCreate.setOnClickListener {
-                val title = binding.editTextTitle.text.toString().trim()
-                if (title.isNotEmpty()) {
-                    val description = binding.editTextDescription.text.toString().trim()
-                    val imagePath =
-                        selectedImageUri?.let { uri -> saveImageToPrivateStorage(uri) } ?: ""
-                    val playlist = Playlist(
-                        title = title,
-                        description = description,
-                        imagePath = imagePath,
-                        trackCount = 0,
-                        trackList = emptyList()
-                    )
-                    viewModel.createPlaylist(playlist)
-                    showSuccessMessage(playlist.title)
-                    findNavController().popBackStack()
-                }
+            val title = binding.editTextTitle.text.toString().trim()
+            if (title.isNotEmpty()) {
+                val description = binding.editTextDescription.text.toString().trim()
+                val imagePath =
+                    viewModel.selectedImageUri.value?.let { uri -> viewModel.saveImageToPrivateStorage(uri) } ?: ""
+                val playlist = Playlist(
+                    title = title,
+                    description = description,
+                    imagePath = imagePath,
+                    trackCount = 0,
+                    trackList = emptyList()
+                )
+                viewModel.createPlaylist(playlist)
+                showSuccessMessage(playlist.title)
+                findNavController().popBackStack()
             }
         }
     }
@@ -127,7 +137,7 @@ class NewPlaylistFragment: Fragment() {
                 .setMessage("Все несохраненные данные будут потеряны")
                 .setNegativeButton("Отмена") { dialog, which ->
                 }
-                .setPositiveButton("Да") { dialog, which ->
+                .setPositiveButton("Завершить") { dialog, which ->
                     findNavController().popBackStack()
                 }
             dialog.show()
@@ -136,23 +146,13 @@ class NewPlaylistFragment: Fragment() {
         }
     }
 
-    private val pickMedia =
-        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-            if (uri != null) {
-                selectedImageUri = uri
-                Glide.with(requireActivity())
-                    .load(uri)
-                    .into(binding.imageViewRectangel)
-                isImageSelected = true
-                saveImageToPrivateStorage(uri)
-            } else {
-                Log.d("PhotoPicker", "No media selected")
-                selectedImageUri = null
-            }
+    private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) {
+            viewModel.setImageUri(uri)
+        } else {
+            Log.d("PhotoPicker", "No media selected")
+            viewModel.setImageUri(null)
         }
-
-    private fun saveImageToPrivateStorage(uri: Uri): String {
-        return viewModel.saveImageToPrivateStorage(uri)
     }
 
     override fun onDestroyView() {

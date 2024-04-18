@@ -1,7 +1,7 @@
 package com.practicum.playlistmaker.player.ui.view
 
 import android.os.Bundle
-import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,6 +60,8 @@ class AudioPlayerFragment : Fragment() {
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
         }
+
+        bottomSheetBehavior.peekHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 500f, resources.displayMetrics).toInt()
 
         viewModel.bottomSheetState.observe(viewLifecycleOwner) { state ->
             bottomSheetBehavior.state = state
@@ -172,9 +174,8 @@ class AudioPlayerFragment : Fragment() {
         binding.playButton.setImageResource(R.drawable.play)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.releasePlayer()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

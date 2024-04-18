@@ -29,6 +29,7 @@
             android:imeOptions="actionDone"
             android:singleLine="true"
             android:background="@drawable/bg_rounded_corners"
+            android:textCursorDrawable="@drawable/cursor"
             android:hint="@string/hint_search"
             android:importantForAutofill="no"
             android:textColor="@color/black"
