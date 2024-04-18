@@ -40,17 +40,13 @@ class SettingsFragment: Fragment() {
         }
 
         binding.buttonWriteSupport.setOnClickListener {
-            val intent = Intent(Intent.ACTION_SENDTO)
-            intent.data = Uri.parse(getString(R.string.mailto_petya_07_yandex_ru))
-            intent.putExtra(
-                Intent.EXTRA_SUBJECT,
-                getString(R.string.playlist_maker_message_developers)
-            )
-            intent.putExtra(
-                Intent.EXTRA_TEXT,
-                getString(R.string.thanks_developers)
-            )
-            startActivity(intent)
+            val intent = Intent(Intent.ACTION_SENDTO).apply {
+                data = Uri.parse(getString(R.string.mailto))
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.mailto_petya_07_yandex_ru).substringAfter(getString(R.string.mailto))))
+                putExtra(Intent.EXTRA_SUBJECT, getString(R.string.playlist_maker_message_developers))
+                putExtra(Intent.EXTRA_TEXT, getString(R.string.thanks_developers))
+            }
+                startActivity(intent)
         }
 
         binding.buttonUserAgreement.setOnClickListener {
