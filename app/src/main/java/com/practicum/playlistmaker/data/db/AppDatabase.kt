@@ -5,7 +5,6 @@ import androidx.room.RoomDatabase
 import com.practicum.playlistmaker.data.db.dao.FavoriteTrackDao
 import com.practicum.playlistmaker.data.db.entity.FavoriteTrackEntity
 
-
 @Database(version = 1, entities = [FavoriteTrackEntity::class])
 abstract class AppDatabase : RoomDatabase() {
 

@@ -16,20 +16,19 @@ class RootActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_PAN)
-
         binding = ActivityRootBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.container_view) as NavHostFragment
+        window.setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_PAN)
+
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.container_view) as NavHostFragment
         val navController = navHostFragment.navController
 
         binding.bottomNavigation.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.player -> {
+                R.id.newPlaylistFragment, R.id.newPlaylistFragment -> {
                     binding.bottomNavigation.visibility = View.GONE
                     binding.line.visibility = View.GONE
                 }
