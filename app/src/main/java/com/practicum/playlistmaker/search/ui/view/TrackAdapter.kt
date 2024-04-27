@@ -6,17 +6,19 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class TrackAdapter(private val clickListener: TrackClickListener) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
+class TrackAdapter(private val clickListener: OnClickListener) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
 
     var tracks = ArrayList<Track>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder = TrackViewHolder(parent, clickListener)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder = TrackViewHolder(parent)
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(tracks[position])
@@ -24,13 +26,13 @@ class TrackAdapter(private val clickListener: TrackClickListener) : RecyclerView
 
     override fun getItemCount() = tracks.size
 
-    fun interface TrackClickListener{
+    interface OnClickListener {
         fun onTrackClick(track: Track)
+        fun onTrackLongClick(track: Track)
     }
 
     inner class TrackViewHolder(
         parent: ViewGroup,
-        private val clickListener: TrackClickListener,
     ) : RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.item_track, parent, false)
     ) {
@@ -49,11 +51,14 @@ class TrackAdapter(private val clickListener: TrackClickListener) : RecyclerView
                 .load(track.artworkUrl100)
                 .error(R.drawable.placeholder)
                 .placeholder(R.drawable.placeholder)
-                .centerCrop()
-                .transform(RoundedCorners(10))
+                .transform(MultiTransformation(CenterCrop(), RoundedCorners(10)))
                 .into(artworkImageView)
 
             itemView.setOnClickListener { clickListener.onTrackClick(track) }
+
+            itemView.setOnLongClickListener {
+                clickListener.onTrackLongClick(track)
+                true}
         }
     }
 }

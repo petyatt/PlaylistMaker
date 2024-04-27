@@ -25,7 +25,6 @@ class PlaylistViewModel(
                         playlistEntity.title,
                         playlistEntity.description,
                         playlistEntity.imagePath,
-                        playlistEntity.trackList,
                         playlistEntity.trackCount
                     )
                 }

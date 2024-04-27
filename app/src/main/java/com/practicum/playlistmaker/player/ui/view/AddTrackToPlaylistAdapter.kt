@@ -6,13 +6,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.media.domain.model.Playlist
 import com.practicum.playlistmaker.search.domain.models.Track
 
 class AddTrackToPlaylistAdapter(
-    private var playlists: List<Playlist>,
+    private var playlists: List<Playlist?> = emptyList<Playlist>(),
     private var tracks: Track,
     private val clickListener: OnPlaylistClickListener
 ): RecyclerView.Adapter<AddTrackToPlaylistAdapter.AddTrackToPlaylistViewHolder>() {
@@ -25,7 +27,7 @@ class AddTrackToPlaylistAdapter(
     override fun getItemCount() = playlists.size
 
     override fun onBindViewHolder(holder: AddTrackToPlaylistViewHolder, position: Int) {
-        holder.bind(playlists[position])
+        playlists[position]?.let { holder.bind(it) }
     }
 
     fun interface OnPlaylistClickListener {
@@ -52,8 +54,7 @@ class AddTrackToPlaylistAdapter(
                 .load(playlist.imagePath)
                 .error(R.drawable.placeholder)
                 .placeholder(R.drawable.placeholder)
-                .centerCrop()
-                .transform(RoundedCorners(10))
+                .transform(MultiTransformation(CenterCrop(), RoundedCorners(10)))
                 .into(playlistAlbum)
 
             itemView.setOnClickListener { clickListener.onPlaylistClick(playlist, tracks) }

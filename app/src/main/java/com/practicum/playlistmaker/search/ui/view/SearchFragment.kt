@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
-import com.practicum.playlistmaker.player.ui.view.AudioPlayerFragment
 import com.practicum.playlistmaker.search.domain.models.SearchState
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.view_model.SearchTrackViewModel
@@ -27,17 +26,25 @@ class SearchFragment: Fragment() {
     private val binding get() = _binding!!
     private val viewModel by viewModel<SearchTrackViewModel>()
 
-    private val trackListAdapter = TrackAdapter { track ->
-        if (viewModel.clickDebounce()) {
-            saveTrackAndStartFragment(track)
+    private val trackListAdapter = TrackAdapter(object: TrackAdapter.OnClickListener {
+        override fun onTrackClick(track: Track) {
+            if (viewModel.clickDebounce()) {
+                saveTrackAndStartFragment(track)
+            }
         }
-    }
 
-    private val trackListHistoryAdapter = TrackAdapter { track ->
-        if (viewModel.clickDebounce()) {
-            saveTrackAndStartFragment(track)
+        override fun onTrackLongClick(track: Track) {}
+    })
+
+    private val trackListHistoryAdapter = TrackAdapter(object: TrackAdapter.OnClickListener {
+        override fun onTrackClick(track: Track) {
+            if (viewModel.clickDebounce()) {
+                saveTrackAndStartFragment(track)
+            }
         }
-    }
+
+        override fun onTrackLongClick(track: Track) {}
+    })
 
     private fun saveTrackAndStartFragment(track: Track) {
         viewModel.saveTrack(track)

@@ -13,6 +13,7 @@ import com.practicum.playlistmaker.player.domain.models.PlayerState
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -78,11 +79,6 @@ class AudioPlayerViewModel(
         }
     }
 
-    fun releasePlayer() {
-        playerInteractor.releasePlayer()
-        _playerState.value = PlayerState.Default()
-    }
-
     fun onFavoriteClicked(track: Track) {
         viewModelScope.launch {
             val isCurrentlyFavorite = track.isFavorite
@@ -103,6 +99,11 @@ class AudioPlayerViewModel(
                 _isFavorite.postValue(isFavorite)
             }
         }
+    }
+
+    private fun releasePlayer() {
+        playerInteractor.releasePlayer()
+        _playerState.value = PlayerState.Default()
     }
 
     private fun startTimer() {
@@ -132,7 +133,6 @@ class AudioPlayerViewModel(
                         playlistEntity.title,
                         playlistEntity.description,
                         playlistEntity.imagePath,
-                        playlistEntity.trackList,
                         playlistEntity.trackCount
                     )
                 }
@@ -143,12 +143,11 @@ class AudioPlayerViewModel(
 
     fun addTrackToPlaylist(track: Track, playlist: Playlist) {
         viewModelScope.launch {
-            if (playlist.trackList.contains(track.trackId)) {
+            val tracks = playlistInteractor.getTracksForPlaylist(playlist.playlistId).first()
+            if (tracks.any { it.trackId == track.trackId }) {
                 _message.postValue("Трек уже добавлен в плейлист ${playlist.title}")
             } else {
-                val newTrackList = playlist.trackList + track.trackId
-                playlist.trackList = newTrackList
-                playlistInteractor.addTrackInPlaylist(track, playlist)
+                playlistInteractor.addTrackToPlaylist(track, playlist)
                 _message.postValue("Добавлено в плейлист ${playlist.title}")
                 _bottomSheetState.postValue(BottomSheetBehavior.STATE_HIDDEN)
             }
@@ -157,7 +156,7 @@ class AudioPlayerViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        playerInteractor.releasePlayer()
+        releasePlayer()
         }
 
     companion object {

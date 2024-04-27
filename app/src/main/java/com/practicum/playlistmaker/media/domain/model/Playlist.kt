@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.media.domain.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import java.io.Serializable
 
 @Parcelize
 data class Playlist(
@@ -9,6 +10,5 @@ data class Playlist(
     val title: String,
     val description: String,
     val imagePath: String?,
-    var trackList: List<Long?>,
     var trackCount: Int
-): Parcelable
+): Parcelable, Serializable

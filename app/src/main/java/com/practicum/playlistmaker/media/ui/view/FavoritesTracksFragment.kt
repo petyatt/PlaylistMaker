@@ -22,18 +22,21 @@ class FavoritesTracksFragment: Fragment() {
     private val binding get() = _binding!!
     private val viewModel by viewModel<FavoritesTracksViewModel>()
 
-    private val adapter = TrackAdapter { track ->
-        if (viewModel.clickDebounce()) {
-            saveTrackAndStartFragment(track)
+    private val adapter = TrackAdapter(object: TrackAdapter.OnClickListener {
+        override fun onTrackClick(track: Track) {
+            if (viewModel.clickDebounce()) {
+                saveTrackAndStartFragment(track)
+            }
         }
-    }
+
+        override fun onTrackLongClick(track: Track) {}
+    })
 
     private fun saveTrackAndStartFragment(track: Track) {
         viewModel.saveTrack(track)
         val args = Bundle()
-        args.putSerializable("track", track)
+        args.putSerializable(TRACK, track)
         findNavController().navigate(R.id.action_mediaFragment_to_audioPlayerFragment, args)
-
     }
 
     override fun onCreateView(
