@@ -80,6 +80,12 @@ class PlaylistInfoFragment: Fragment() {
         binding.recyclerViewBottomSheet.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerViewBottomSheet.adapter = tracklistAdapter
 
+        viewModel.playlistDeleted.observe(viewLifecycleOwner) {deleted ->
+            if(deleted) {
+                findNavController().popBackStack()
+            }
+        }
+
         viewModel.playlistLiveData.observe(viewLifecycleOwner) { playlist ->
             if (playlist != null) {
                 updateUI(playlist)
@@ -231,7 +237,12 @@ class PlaylistInfoFragment: Fragment() {
             binding.tvCountTime.text = viewModel.getTracksWord(totalMinutes, "minutes")
         }
 
-        Glide.with(this).load(playlist.imagePath).into(binding.ivCover)
+        Glide.with(requireContext())
+            .load(playlist.imagePath)
+            .error(R.drawable.placeholder)
+            .placeholder(R.drawable.placeholder)
+            .transform(MultiTransformation(CenterCrop(), RoundedCorners(10)))
+            .into(binding.ivCover)
     }
 
     private fun updatePlaylistDetails(playlist: Playlist?) {
@@ -270,7 +281,6 @@ class PlaylistInfoFragment: Fragment() {
             .setNegativeButton("Нет", null)
             .setPositiveButton("Да") { _, _ ->
                     viewModel.deletePlaylist(playlistId)
-                    findNavController().navigate(R.id.action_playlistInfoFragment_to_mediaFragment)
             }
             .show()
     }

@@ -16,7 +16,9 @@ interface PlaylistTrackCrossDao {
 
     @Query("SELECT t.* FROM tracks_playlist_table AS t\n" +
             "INNER JOIN playlist_track_cross_ref AS ptc ON t.trackId = ptc.trackId\n" +
-            "WHERE ptc.playlistId = :playlistId")
+            "WHERE ptc.playlistId = :playlistId\n" +
+            "ORDER BY ptc.addedAt DESC"
+    )
     fun getTracksForPlaylist(playlistId: Long): Flow<List<Track>>
 
     @Query("DELETE FROM playlist_track_cross_ref WHERE trackId = :trackId AND playlistId = :playlistId")

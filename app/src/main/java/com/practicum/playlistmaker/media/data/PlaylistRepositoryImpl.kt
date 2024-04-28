@@ -4,7 +4,6 @@ import androidx.room.Transaction
 import com.practicum.playlistmaker.data.db.AppDatabase
 import com.practicum.playlistmaker.data.db.converter.PlaylistDbConverter
 import com.practicum.playlistmaker.data.db.converter.TracksPlaylistDbConverter
-import com.practicum.playlistmaker.data.db.entity.PlaylistEntity
 import com.practicum.playlistmaker.data.db.entity.PlaylistTrackCrossEntity
 import com.practicum.playlistmaker.media.domain.db.PlaylistRepository
 import com.practicum.playlistmaker.media.domain.model.Playlist
@@ -12,7 +11,6 @@ import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.map
 
 class PlaylistRepositoryImpl(
@@ -33,11 +31,11 @@ class PlaylistRepositoryImpl(
     override suspend fun addTrackToPlaylist(track: Track, playlist: Playlist) {
         val trackPlaylistEntity = tracksPlaylistDbConverter.map(track, System.currentTimeMillis())
         appDatabase.tracksPlaylistsDao().addTrackInPlaylist(trackPlaylistEntity)
-        appDatabase.playlistTrackCrossDao().insert(PlaylistTrackCrossEntity(playlist.playlistId, track.trackId))
+        appDatabase.playlistTrackCrossDao().insert(PlaylistTrackCrossEntity(playlist.playlistId, track.trackId, System.currentTimeMillis()))
 
         val updatedPlaylist = playlist.copy(trackCount = playlist.trackCount + 1)
         val playlistEntity = playlistDbConverter.map(updatedPlaylist)
-        playlistEntity?.let {
+        playlistEntity.let {
             appDatabase.playlistDao().updatePlaylist(it)
         }
     }

@@ -6,5 +6,6 @@ import androidx.room.Entity
     primaryKeys = ["playlistId", "trackId"])
 data class PlaylistTrackCrossEntity(
     val playlistId: Long,
-    val trackId: Long
+    val trackId: Long,
+    val addedAt: Long
 )

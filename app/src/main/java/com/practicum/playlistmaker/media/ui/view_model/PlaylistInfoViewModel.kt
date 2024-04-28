@@ -14,6 +14,9 @@ class PlaylistInfoViewModel(
     private val playlistInteractor: PlaylistInteractor
 ): ViewModel() {
 
+    private val _playlistDeleted = MutableLiveData<Boolean>()
+    val playlistDeleted: LiveData<Boolean> get() = _playlistDeleted
+
     private val _totalMinutesLiveData = MutableLiveData<Int>()
     val totalMinutesLiveData: LiveData<Int> get() = _totalMinutesLiveData
 
@@ -39,6 +42,7 @@ class PlaylistInfoViewModel(
         viewModelScope.launch {
             playlistInteractor.deletePlaylist(playlistId)
             refreshPlaylistAndTracks(playlistId)
+            _playlistDeleted.postValue(true)
         }
     }
 

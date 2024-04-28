@@ -51,6 +51,7 @@ class PlaylistFragment: Fragment() {
                 binding.placeholderView.isVisible = false
                 binding.placeholderViewPlaylistNotFound.isVisible = false
             } else {
+                playlistAdapter.setPlaylists(playlists)
                 binding.placeholderView.isVisible = true
                 binding.placeholderViewPlaylistNotFound.isVisible = true
             }
