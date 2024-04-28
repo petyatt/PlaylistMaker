@@ -24,7 +24,7 @@ import com.practicum.playlistmaker.media.domain.model.Playlist
 import com.practicum.playlistmaker.media.ui.view_model.NewPlaylistViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NewPlaylistFragment: Fragment() {
+open class NewPlaylistFragment: Fragment() {
 
     private var isImageSelected = false
     private val viewModel by viewModel<NewPlaylistViewModel>()
@@ -93,12 +93,7 @@ class NewPlaylistFragment: Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-                if (s.isNullOrBlank()) {
-                    binding.imageButtonCreate.setImageResource(R.drawable.button_create)
-                } else {
-                    binding.imageButtonCreate.setImageResource(R.drawable.button_create_action)
-                }
+                updateSaveButtonState()
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -115,13 +110,40 @@ class NewPlaylistFragment: Fragment() {
                     description = description,
                     imagePath = imagePath,
                     trackCount = 0,
-                    trackList = emptyList()
                 )
                 viewModel.createPlaylist(playlist)
                 showSuccessMessage(playlist.title)
                 findNavController().popBackStack()
             }
         }
+    }
+
+    open fun setupUI() {
+        binding.imageButtonCreate.setImageResource(R.drawable.button_create)
+        binding.textNewPlaylist.text = "Создать"
+        updateSaveButtonState()
+    }
+
+    open fun handleSave() {
+        val title = binding.editTextTitle.text.toString().trim()
+        if (title.isNotEmpty()) {
+            val description = binding.editTextDescription.text.toString().trim()
+            val imagePath = viewModel.selectedImageUri.value?.let { uri -> viewModel.saveImageToPrivateStorage(uri) } ?: ""
+            val newPlaylist = Playlist(title = title, description = description, imagePath = imagePath, trackCount = 0)
+            viewModel.createPlaylist(newPlaylist)
+            showSuccessMessage("Плейлист \"$title\" успешно создан")
+            findNavController().popBackStack()
+        } else {
+            Toast.makeText(context, "Название плейлиста не может быть пустым", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun updateSaveButtonState() {
+        val isTitleNotEmpty = binding.editTextTitle.text.toString().trim().isNotEmpty()
+        binding.imageButtonCreate.isEnabled = isTitleNotEmpty
+        binding.imageButtonCreate.setImageResource(
+            if (isTitleNotEmpty) R.drawable.button_create_action else R.drawable.button_create
+        )
     }
 
     private fun showSuccessMessage(playlistName: String) {

@@ -15,9 +15,9 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 
-class NewPlaylistViewModel(
+open class NewPlaylistViewModel(
     private val appContext: Context,
-    private val playlistInteractor: PlaylistInteractor
+    val playlistInteractor: PlaylistInteractor
 ): ViewModel() {
 
     private val _selectedImageUri = MutableLiveData<Uri?>()

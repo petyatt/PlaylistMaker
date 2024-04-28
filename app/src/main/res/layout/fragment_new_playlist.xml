@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="14dp"
-        android:text="Новый плейлист"
+        android:text="@string/newPlaylist"
         app:layout_constraintStart_toEndOf="@+id/button_back"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -46,7 +46,7 @@
         android:layout_marginStart="@dimen/paddingStart_16dp"
         android:layout_marginEnd="@dimen/layout_marginRight_16dp"
         android:layout_marginTop="32dp"
-        android:hint="Название*"
+        android:hint="@string/title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.518"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +64,7 @@
         android:layout_marginStart="@dimen/paddingStart_16dp"
         android:layout_marginEnd="@dimen/layout_marginRight_16dp"
         android:layout_marginTop="16dp"
-        android:hint="Описание"
+        android:hint="@string/description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.518"
         app:layout_constraintStart_toStartOf="parent"
@@ -105,7 +105,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="150dp"
         android:gravity="center"
-        android:text="Создать"
+        android:text="@string/create"
         android:textColor="@color/white"
         android:textSize="@dimen/ts_16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -120,11 +120,13 @@
         android:layout_marginTop="82dp"
         android:layout_marginEnd="24dp"
         android:clickable="true"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/rounded_rectangle" />
+        app:srcCompat="@drawable/rounded_rectangle"
+        android:contentDescription="@string/imagePlaylist" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

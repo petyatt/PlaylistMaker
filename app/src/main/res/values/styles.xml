@@ -127,6 +127,10 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="textColorPlaylistInfo">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
     <style name="tabLayout">
         <item name="android:textSize">14sp</item>
         <item name="android:backgroundTint">@color/white</item>
@@ -193,6 +197,10 @@
 
     <style name="itemPlaylist">
         <item name="android:backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="textColorPlaylistInfoMenu">
         <item name="android:textColor">@color/black</item>
     </style>
 </resources>

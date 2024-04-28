@@ -18,7 +18,13 @@ class PlaylistFragment: Fragment() {
     private val viewModel by viewModel<PlaylistViewModel>()
     private var _binding: FragmentPlaylistBinding? = null
     private val binding get() = _binding!!
-    private val playlistAdapter = PlaylistAdapter()
+    private val playlistAdapter: PlaylistAdapter by lazy {
+        PlaylistAdapter { playlist ->
+            val bundle = Bundle()
+            bundle.putLong("playlistId", playlist.playlistId)
+            findNavController().navigate(R.id.action_mediaFragment_to_playlistInfoFragment, bundle)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,6 +51,7 @@ class PlaylistFragment: Fragment() {
                 binding.placeholderView.isVisible = false
                 binding.placeholderViewPlaylistNotFound.isVisible = false
             } else {
+                playlistAdapter.setPlaylists(playlists)
                 binding.placeholderView.isVisible = true
                 binding.placeholderViewPlaylistNotFound.isVisible = true
             }

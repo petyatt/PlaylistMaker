@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -29,11 +31,12 @@ class AudioPlayerFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var bottomNavigation: BottomNavigationView
     private val viewModel by viewModel<AudioPlayerViewModel>()
-    private val addTrackToPlaylistAdapter: AddTrackToPlaylistAdapter by lazy {
-        AddTrackToPlaylistAdapter(
-            playlists = emptyList(),
-            tracks =  arguments?.getSerializable("track") as Track) { playlist, track ->
-            viewModel.addTrackToPlaylist(track, playlist)
+    private val addTrackToPlaylistAdapter: AddTrackToPlaylistAdapter? by lazy {
+        val track = arguments?.getSerializable("track") as? Track
+        track?.let {
+            AddTrackToPlaylistAdapter(emptyList(), it) { playlist, currentTrack ->
+                viewModel.addTrackToPlaylist(currentTrack, playlist)
+            }
         }
     }
 
@@ -104,8 +107,8 @@ class AudioPlayerFragment : Fragment() {
 
         viewModel.playlistsLiveData.observe(viewLifecycleOwner) { playlists ->
             if (playlists.isNotEmpty()) {
-                addTrackToPlaylistAdapter.setPlaylists(playlists)
-                addTrackToPlaylistAdapter.notifyDataSetChanged()
+                addTrackToPlaylistAdapter?.setPlaylists(playlists)
+                addTrackToPlaylistAdapter?.notifyDataSetChanged()
             }
         }
 
@@ -130,6 +133,10 @@ class AudioPlayerFragment : Fragment() {
             } else {
                 binding.favoritebutton.setImageResource(R.drawable.favorite_border_l)
             }
+        }
+
+        viewModel.message.observe(viewLifecycleOwner) { message ->
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
 
         track?.let { viewModel.observeFavourite(it) }
@@ -157,15 +164,8 @@ class AudioPlayerFragment : Fragment() {
             .load(track?.artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg"))
             .error(R.drawable.placeholder)
             .placeholder(R.drawable.placeholder)
-            .fitCenter()
-            .transform(RoundedCorners(30))
+            .transform(MultiTransformation(CenterCrop(), RoundedCorners(10)))
             .into(binding.imageView6)
-
-        viewModel.message.observe(viewLifecycleOwner) { message ->
-            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-        }
-
-
     }
 
     override fun onPause() {

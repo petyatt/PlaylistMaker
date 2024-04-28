@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.data.db.converter
 
-import com.practicum.playlistmaker.data.db.entity.FavoriteTrackEntity
 import com.practicum.playlistmaker.data.db.entity.TracksPlaylistEntity
 import com.practicum.playlistmaker.search.domain.models.Track
 

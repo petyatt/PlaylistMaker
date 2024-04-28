@@ -75,7 +75,7 @@
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="6dp"
                     android:layout_marginEnd="5dp"
-                    app:srcCompat="@drawable/poit" />
+                    app:srcCompat="@drawable/point" />
 
                 <TextView
                     android:id="@+id/track_time"

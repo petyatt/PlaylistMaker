@@ -6,30 +6,38 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.media.domain.model.Playlist
 import java.io.File
 
-class PlaylistAdapter : RecyclerView.Adapter<PlaylistAdapter.PlaylistViewHoldrer>() {
+class PlaylistAdapter(
+    private val clickListener: OnPlaylistClickListener
+) : RecyclerView.Adapter<PlaylistAdapter.PlaylistViewHolder>() {
 
-    private var playlists: List<Playlist> = listOf()
+    private var playlists: List<Playlist> = emptyList()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHoldrer = PlaylistViewHoldrer(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder = PlaylistViewHolder(parent)
 
     override fun getItemCount() = playlists.size
 
-    override fun onBindViewHolder(holder: PlaylistViewHoldrer, position: Int) {
+    override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
         holder.bind(playlists[position])
     }
 
-    inner class PlaylistViewHoldrer(
+    fun interface OnPlaylistClickListener {
+        fun clickListener(playlist: Playlist)
+    }
+
+    inner class PlaylistViewHolder(
         parent: ViewGroup,
     ): RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.item_playlist, parent, false)
     ) {
 
-        private val playlistAlbum: ImageView = itemView.findViewById(R.id.imageView_album)
+        val playlistAlbum: ImageView = itemView.findViewById(R.id.imageView_album)
         private val playlistTitle: TextView = itemView.findViewById(R.id.textView_title)
         private val playlistCountTrack: TextView = itemView.findViewById(R.id.textView_count_track)
 
@@ -45,12 +53,13 @@ class PlaylistAdapter : RecyclerView.Adapter<PlaylistAdapter.PlaylistViewHoldrer
                     .load(File(playlist.imagePath))
                     .placeholder(R.drawable.placeholder)
                     .error(R.drawable.placeholder)
-                    .fitCenter()
-                    .transform(RoundedCorners(30))
+                    .transform(MultiTransformation(CenterCrop(), RoundedCorners(10)))
                     .into(playlistAlbum)
             } else {
                 playlistAlbum.setImageResource(R.drawable.placeholder)
             }
+
+            itemView.setOnClickListener { clickListener.clickListener(playlist) }
         }
     }
 
@@ -65,5 +74,10 @@ class PlaylistAdapter : RecyclerView.Adapter<PlaylistAdapter.PlaylistViewHoldrer
     fun setPlaylists(newPlaylists: List<Playlist>) {
         playlists = newPlaylists
         notifyDataSetChanged()
+    }
+
+    override fun onViewRecycled(holder: PlaylistViewHolder) {
+        super.onViewRecycled(holder)
+        Glide.with(holder.itemView.context).clear(holder.playlistAlbum)
     }
 }
